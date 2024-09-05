@@ -299,6 +299,7 @@ void GameScene::SetTitle()
 			floor->SetPosition({ 0,0,-30 });
 		}
 		j++;
+		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//è∞
 	}
 
 }

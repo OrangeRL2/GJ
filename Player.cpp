@@ -96,6 +96,28 @@ void Player::UpdateMove()
 	if (input->PushKey(DIK_D)) {
 		position0.z -= 1.0f;
 	}
+
+	if (input->PushKey(DIK_SPACE) && groundFlag0 == true && playerState == front)
+	{
+		//接地フラグをfalseに
+		fallTimer0 = -1;
+		groundFlag0 = false;
+	}
+
+	if (groundFlag0 == true && playerState == front && fallTimer0 > 0)
+	{
+		//接地フラグをfalseに
+		groundFlag0 = false;
+	}
+
+	//地面に接していない場合の落下処理(表のオブジェクト)
+	//60フレームでタイマーを1進める
+	fallTimer0 += 3.0f / 60.0f;
+	//落下ベクトル計算
+	fallVelocity0.y = -(GAcceleration * fallTimer0);
+	//60フレームでタイマーを1進める
+	fallTimer1 += 3.0f / 60.0f;
+
 }
 void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 {
@@ -247,12 +269,6 @@ void Player::UpdateCollision()
 			//めり込まなくなりまで加算
 			while (collision->Update(hitboxPosition0, hitboxScale0) == 1)
 			{
-				//めり込んだらプレイヤーの状態を変更
-				if (groundFlag0 != preGroundFlag0)
-				{
-					changeFlag = true;
-					playerState = back;
-				}
 				position0.y += 0.002f;
 				hitboxPosition0.y += 0.002f;
 			}
