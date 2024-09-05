@@ -82,7 +82,7 @@ private:
 	float changePosY = 10.0f;
 
 	//プレイヤー追尾状態の際のY座標
-	float eyeTitleY = 30.0f;
+	float eyeTitleY = 50.0f;
 	float targetTitlePosY = 20.0f;
 
 	//視点を変える用の変数

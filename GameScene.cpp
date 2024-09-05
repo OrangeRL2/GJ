@@ -228,6 +228,8 @@ void GameScene::TitleUpdate()
 	player->Update();
 	//camera_->SetTarget(player->GetPosition0());
 	camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+	//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+	camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y+10.0f,camera_->GetEye().z });
 	//ÉJÉÅÉâçXêV
 	camera_->Update();
 }
@@ -249,7 +251,7 @@ void GameScene::TitleDraw()
 	int i = 0;
 	for (std::unique_ptr<Floor>& floor : floors)
 	{
-		if (i == 0)floor->Draw(dxCommon_->GetCommandList());
+		if (i < 3)floor->Draw(dxCommon_->GetCommandList());
 		i++;
 	}
 
@@ -265,38 +267,23 @@ void GameScene::SetTitle()
 	{
 		if (j == 0)
 		{
-			floor->SetScale({ 1100,0.5,60 });
+			floor->SetScale({ 100,0.5,60 });
 			floor->SetPosition({ 0,0,0 });
 		}
 		if (j == 1)
 		{
-			floor->SetScale({ 0.5f,80.0,60 });
-			floor->SetPosition({ -320,0,0 });
+			floor->SetScale({ 10,0.5,10 });
+			floor->SetPosition({ 0,10,0 });
 		}
 		if (j == 2)
 		{
-			floor->SetScale({ 0.5f,80.0,60 });
-			floor->SetPosition({ 520,0,0 });
+			floor->SetScale({ 10,0.5,10 });
+			floor->SetPosition({ 10,20,0 });
 		}
 		if (j == 3)
 		{
-			floor->SetScale({ 1100,0.5,60 });
-			floor->SetPosition({ 0,40,0 });
-		}
-		if (j == 4)
-		{
-			floor->SetScale({ 1100,0.5,60 });
-			floor->SetPosition({ 0,-40,0 });
-		}
-		if (j == 5)
-		{
-			floor->SetScale({ 1100,80.0f,0.5 });
-			floor->SetPosition({ 0,0,30 });
-		}
-		if (j == 6)
-		{
-			floor->SetScale({ 1100,80.0f,0.5 });
-			floor->SetPosition({ 0,0,-30 });
+			floor->SetScale({ 10,0.5,10 });
+			floor->SetPosition({ 10,20,0 });
 		}
 		j++;
 		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//è∞

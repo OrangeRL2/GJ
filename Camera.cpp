@@ -80,48 +80,49 @@ void Camera::StageSelect(DirectX::XMFLOAT3 pos, int playerState)
 	}
 
 	//changeMode==trueのとき
-	if (changeMode == true)
-	{
-		//タイマー開始
-		changeModeTimer += 1.0f;
+	//if (changeMode == true)
+	//{
+	//	//タイマー開始
+	//	changeModeTimer += 1.0f;
 
-		/*easeInOutQuart(changeModeTimer / 60.0f);*/
-		//表から裏の場合
-		if (playerState == 1)
-		{
-			eye_.y = eyeTitleY - ((eyeTitleY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
-			target_.y = targetTitlePosY - ((targetTitlePosY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
-			eye_.x = pos.x;
-			target_.x = pos.x;
-		}
-		//裏から表の場合
-		if (playerState == 0)
-		{
-			eye_.y = -eyeTitleY + ((eyeTitleY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
-			target_.y = -targetTitlePosY + ((targetTitlePosY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
-			eye_.x = pos.x;
-			target_.x = pos.x;
-		}
+	//	/*easeInOutQuart(changeModeTimer / 60.0f);*/
+	//	//表から裏の場合
+	//	if (playerState == 1)
+	//	{
+	//		eye_.y = eyeTitleY - ((eyeTitleY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
+	//		target_.y = targetTitlePosY - ((targetTitlePosY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
+	//		eye_.x = pos.x;
+	//		target_.x = pos.x;
+	//	}
+	//	//裏から表の場合
+	//	if (playerState == 0)
+	//	{
+	//		eye_.y = -eyeTitleY + ((eyeTitleY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
+	//		target_.y = -targetTitlePosY + ((targetTitlePosY * easeOutQuint(changeModeTimer / 60.0f)) * 2);
+	//		eye_.x = pos.x;
+	//		target_.x = pos.x;
+	//	}
 
-		//設定していた時間まで到達したらchangeMode解除
-		if (changeModeTimer >= changeModeTime)
-		{
-			changeMode = false;
-			changeModeTimer = 0;
-		}
+	//	//設定していた時間まで到達したらchangeMode解除
+	//	if (changeModeTimer >= changeModeTime)
+	//	{
+	//		changeMode = false;
+	//		changeModeTimer = 0;
+	//	}
 
-	}
+	//}
 
 	//プレイヤーの状態によって視点を変更
 	if (playerState == 0 && changeMode == false)
 	{
-		eye_ = { pos.x,eyeTitleY,pos.z - 100 };
+		eye_ = { pos.x,pos.y+eyeTitleY,pos.z - 100 };
+		
 		target_ = { pos.x,targetTitlePosY,pos.z + 20 };
 	}
 	if (playerState == 1 && changeMode == false)
 	{
-		eye_ = { pos.x,-eyeTitleY,pos.z - 100 };
-		target_ = { pos.x,-targetTitlePosY,pos.z + 20 };
+		eye_ = { pos.x,pos.y+eyeTitleY,pos.z - 100 };
+		target_ = { pos.x,targetTitlePosY,pos.z + 20 };
 	}
 
 	//前のフレームの状態を取得
@@ -144,10 +145,12 @@ void Camera::PlayerAim(DirectX::XMFLOAT3 pos0, DirectX::XMFLOAT3 pos1, int playe
 	if (playerState == 0)
 	{
 		target_ = { pos0.x,pos0.y,pos0.z };
+		eye_.y = pos0.y + 10.0f;
 	}
 	if (playerState == 1)
 	{
 		target_ = { pos1.x,pos1.y,pos1.z };
+		eye_.y = pos0.y + 10.0f;
 	}
 
 #pragma region Y座標関連
@@ -165,15 +168,15 @@ void Camera::PlayerAim(DirectX::XMFLOAT3 pos0, DirectX::XMFLOAT3 pos1, int playe
 
 		/*easeInOutQuart(changeModeTimer / 60.0f);*/
 		//表から裏の場合
-		if (playerState == 1)
-		{
-			eye_.y = changePosY - ((changePosY * easeOutQuint(changeModeTimer / 60.0f))* 2);
-		}
-		//裏から表の場合
-		if (playerState == 0)
-		{
-			eye_.y = -changePosY + ((changePosY * easeOutQuint(changeModeTimer / 60.0f))*2);
-		}
+		//if (playerState == 1)
+		//{
+		//	eye_.y = changePosY - ((changePosY * easeOutQuint(changeModeTimer / 60.0f))* 2);
+		//}
+		////裏から表の場合
+		//if (playerState == 0)
+		//{
+		//	eye_.y = -changePosY + ((changePosY * easeOutQuint(changeModeTimer / 60.0f))*2);
+		//}
 
 		//設定していた時間まで到達したらchangeMode解除
 		if (changeModeTimer >= changeModeTime)
@@ -308,7 +311,7 @@ void Camera::PlayerAim(DirectX::XMFLOAT3 pos0, DirectX::XMFLOAT3 pos1, int playe
 
 
 #pragma endregion
-
+	
 	//プレイヤーの状態によって視点を変更
 	if (playerState == 0 && changeMode == false)
 	{
