@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\base">
+      <UniqueIdentifier>{f5dbdd75-46e4-4130-bbc7-723c10cfda7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\base">
+      <UniqueIdentifier>{1bcf59ac-cd26-4d90-b2cb-0636772693f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\fbx">
+      <UniqueIdentifier>{91875b7a-90ff-4946-bc1a-31d1bfa6f0dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\fbx">
+      <UniqueIdentifier>{09c18d0b-caf8-4675-b36f-c363b92d1f00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shaders">
+      <UniqueIdentifier>{09be63ff-a021-4247-9150-a7f9892d62e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shaders\FbxShader">
+      <UniqueIdentifier>{4b5dab08-afef-49cc-b296-af213c7bc157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shaders\OBJShader">
+      <UniqueIdentifier>{ee3ba699-408e-4d48-b695-83f4d720ae17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shaders\ParticleShader">
+      <UniqueIdentifier>{9fc72b5c-7b72-4c50-a0d5-fa22a87ea9cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shaders\SpriteShader">
+      <UniqueIdentifier>{68e2456c-3c29-4446-922d-dbfc2ef37385}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3D">
+      <UniqueIdentifier>{9435ab47-2e46-460e-9ac2-8ad899992ec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3D">
+      <UniqueIdentifier>{f0483528-f78a-4c0b-a329-f4bdeac3fadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\Shaders\Shader">
+      <UniqueIdentifier>{6da236c3-6d7c-4c2d-9e98-1565aa0a904d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\math">
+      <UniqueIdentifier>{ce9fa00d-3996-40f1-9108-114d1eff73a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\math">
+      <UniqueIdentifier>{f63a18f9-c7e6-472f-8724-b4d1e91280b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\gameObject">
+      <UniqueIdentifier>{7eb61227-b573-4f42-ade4-d543f3627909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\gameObject">
+      <UniqueIdentifier>{22084622-2b87-464b-8579-fd378c4e3508}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="base\DirectXCommon.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\FPS.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\Input.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\Message.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\WinApp.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="base\DXInput.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\FbxLoader.cpp">
+      <Filter>ソース ファイル\fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\FbxModel.cpp">
+      <Filter>ソース ファイル\fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\FbxObject3D.cpp">
+      <Filter>ソース ファイル\fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\CubeModel.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\CubeObject3D.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\Metaball.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\Collision.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Math2.cpp">
+      <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Matrix4.cpp">
+      <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Quaternion.cpp">
+      <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\Vector3.cpp">
+      <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\Floor.cpp">
+      <Filter>ソース ファイル\gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\Obstacle.cpp">
+      <Filter>ソース ファイル\gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="base\Sprite.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="CircleShadow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="base\DirectXCommon.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\FPS.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Input.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Message.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\WinApp.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\DXInput.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\FbxLoader.h">
+      <Filter>ヘッダー ファイル\fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\FbxModel.h">
+      <Filter>ヘッダー ファイル\fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\FbxObject3D.h">
+      <Filter>ヘッダー ファイル\fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\CubeModel.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\CubeObject3D.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\Metaball.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\Collision.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Math2.h">
+      <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Matrix4.h">
+      <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Quaternion.h">
+      <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Vector3.h">
+      <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\Floor.h">
+      <Filter>ヘッダー ファイル\gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\Obstacle.h">
+      <Filter>ヘッダー ファイル\gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="base\Sprite.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="CircleShadow.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FbxHeader.hlsli">
+      <Filter>リソース ファイル\Shaders\FbxShader</Filter>
+    </None>
+    <None Include="ShaderHeader.hlsli">
+      <Filter>リソース ファイル\Shaders\Shader</Filter>
+    </None>
+    <None Include="SpriteHeader.hlsli">
+      <Filter>リソース ファイル\Shaders\SpriteShader</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="FbxPixelShader.hlsl">
+      <Filter>リソース ファイル\Shaders\FbxShader</Filter>
+    </FxCompile>
+    <FxCompile Include="FbxVertexShader.hlsl">
+      <Filter>リソース ファイル\Shaders\FbxShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>リソース ファイル\Shaders\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>リソース ファイル\Shaders\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="SpritePixelShader.hlsl">
+      <Filter>リソース ファイル\Shaders\SpriteShader</Filter>
+    </FxCompile>
+    <FxCompile Include="SpriteVertexShader.hlsl">
+      <Filter>リソース ファイル\Shaders\SpriteShader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
