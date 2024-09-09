@@ -72,7 +72,8 @@ public:
 
 	bool GetGroundFlag0() { return groundFlag0; }
 	bool GetMoveFlag() { return moveFlag; }
-
+	//ゴールのフラグ
+	bool GetGoalFlag() { return goalFlag; }
 	int GetSceneFlag() { return sceneFlag; }
 
 	//メンバ変数
@@ -97,6 +98,7 @@ private:
 	//当たり判定
 	std::list<std::unique_ptr<Collision>> collisionsFloor;
 	std::list<std::unique_ptr<Collision>> collisionsObstacle;
+	std::list<std::unique_ptr<Collision>> collisionsGoal;
 
 	//変形行列
 	DirectX::XMFLOAT3 position0 = { 0.0f,0.0f,0.0f };

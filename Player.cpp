@@ -100,7 +100,7 @@ void Player::UpdateMove()
 	if (input->PushKey(DIK_SPACE) && groundFlag0 == true && playerState == front)
 	{
 		//接地フラグをfalseに
-		fallTimer0 = -1.1f;
+		fallTimer0 = -1.3f;
 		groundFlag0 = false;
 	}
 
@@ -297,6 +297,16 @@ void Player::UpdateCollision()
 
 #pragma endregion
 	}
+
+	//----------ゴールとの当たり判定---------
+	for (std::unique_ptr<Collision>& collision : collisionsGoal)
+	{
+		if (collision->Update(hitboxPosition0, hitboxScale0) == 1)
+		{
+			goalFlag = true;
+			position0.x = 10.0f;
+		}
+	}
 }
 
 
@@ -319,4 +329,11 @@ void Player::SetCollisionFloor(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 sca
 	std::unique_ptr<Collision>newCollision = std::make_unique<Collision>();
 	newCollision->SetObject(position, scale);
 	collisionsFloor.push_back(std::move(newCollision));
+}
+
+void Player::SetCollisionGoal(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 scale)
+{
+	std::unique_ptr<Collision>newCollision = std::make_unique<Collision>();
+	newCollision->SetObject(position, scale);
+	collisionsGoal.push_back(std::move(newCollision));
 }

@@ -14,7 +14,7 @@
 #include "Sprite.h"
 #include "Floor.h"
 #include "Player.h"
-
+#include "Goal.h"
 class GameScene
 {
 	//ƒƒ“ƒoŠÖ”
@@ -107,7 +107,8 @@ private:
 	//std::unique_ptr<Floor>floor;
 	std::list<std::unique_ptr<Floor>>floors;
 	size_t floorVol = 7;
-
+	//ƒS[ƒ‹
+	std::unique_ptr<Goal>goal;
 
 	//---------------------------
 

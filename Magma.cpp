@@ -1,9 +1,9 @@
-#include "Obstacle.h"
+#include "Magma.h"
 
-ID3D12Device* Obstacle::device = nullptr;
-Camera* Obstacle::camera = nullptr;
+ID3D12Device* Magma::device = nullptr;
+Camera* Magma::camera = nullptr;
 
-void Obstacle::Initialize()
+void Magma::Initialize()
 {
 	//オブジェクト初期化
 	object = new FbxObject3D;
@@ -23,15 +23,8 @@ void Obstacle::Initialize()
 	hitboxScale = { 9.0f,3.0f,9.0f };
 }
 
-void Obstacle::Update()
+void Magma::Update()
 {
-	//hitbox調整
-	/*hitboxPosition.x = position.x;
-	hitboxPosition.y = position.y;
-	hitboxPosition.z = position.z;
-	hitboxRotation = { 0.0f,0.0f,0.0f };
-	hitboxScale = { 6.0f,6.0f,6.0f };*/
-
 	//変形行列セット
 	object->SetPosition(position);
 	object->SetRotation(rotation);
@@ -43,17 +36,15 @@ void Obstacle::Update()
 	cubeObject->SetScale(hitboxScale);
 	cubeObject->SetRotation(hitboxRotation);
 	cubeObject->Update();
-	position.y -= 0.001f;
-	hitboxPosition.y -= 0.001f;
 }
 
-void Obstacle::Draw(ID3D12GraphicsCommandList* cmdList)
+void Magma::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	object->Draw(cmdList);
 	/*cubeObject->Draw(cmdList);*/
 }
 
-void Obstacle::SetHitbox()
+void Magma::SetHitbox()
 {
 	hitboxPosition.x = position.x;
 	hitboxPosition.y = position.y + 3;

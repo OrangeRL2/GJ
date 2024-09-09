@@ -102,7 +102,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	Player::SetDXInput(dxInput);
 	//プレイヤー初期化
 	Player* newPlayer = new Player();
-	newPlayer->SetModel(model1);
+	newPlayer->SetModel(stoneModel);
 	newPlayer->SetCubeModel(hitBoxModel.get());
 	newPlayer->Initialize();
 	player.reset(newPlayer);
@@ -170,6 +170,21 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 
 #pragma endregion
 
+#pragma region ゴール初期化
+
+	//デバイスとカメラセット
+	Goal::SetDevice(dxCommon_->GetDevice());
+	Goal::SetCamera(camera_.get());
+	//ゴール初期化
+	Goal* newGoal = new Goal();
+	newGoal->SetModel(model1);
+	newGoal->SetCubeModel(hitBoxModel.get());
+	newGoal->Initialize();
+	newGoal->SetScale({ 5.0f,5.0f ,5.0f });
+	goal.reset(newGoal);
+
+#pragma endregion 
+
 #pragma region スプライト
 	//スプライト初期化処理
 	spriteCommon = sprite->SpriteCommonCreate(dxCommon_->GetDevice(), 1280, 720);
@@ -202,7 +217,10 @@ void GameScene::Update()
 	//コントローラー更新
 	dxInput->InputProcess();
 
-
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		//player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
+	}
 	//シーンごとの処理
 	(this->*Scene_[scene_])();
 
@@ -262,7 +280,7 @@ void GameScene::TitleUpdate()
 
 	//プレイヤー更新
 	player->Update();
-
+	goal->Update();
 	//オブジェクト更新
 	skydomeObject->SetPosition(player->GetPosition0());
 	//skydomeObject->SetPosition({0.0f,0.0f,0.0f});
@@ -294,7 +312,7 @@ void GameScene::TitleDraw()
 	{
 		obstacle->Draw(dxCommon_->GetCommandList());
 	}
-
+	goal->Draw(dxCommon_->GetCommandList());
 	player->Draw(dxCommon_->GetCommandList());
 	skydomeObject->Draw(dxCommon_->GetCommandList());
 	//床描画
@@ -304,7 +322,7 @@ void GameScene::TitleDraw()
 		if (i == 0)floor->Draw(dxCommon_->GetCommandList());
 		i++;
 	}
-
+	
 }
 
 void GameScene::GameUpdate()
@@ -326,7 +344,7 @@ void GameScene::GameUpdate()
 
 	//プレイヤー更新
 	player->Update();
-
+	goal->Update();
 	//オブジェクト更新
 	skydomeObject->SetPosition(player->GetPosition0());
 	//skydomeObject->SetPosition({0.0f,0.0f,0.0f});
@@ -365,10 +383,10 @@ void GameScene::GameDraw()
 	int i = 0;
 	for (std::unique_ptr<Floor>& floor : floors)
 	{
-		if (i == 0)floor->Draw(dxCommon_->GetCommandList());
+		if (i <= 1)floor->Draw(dxCommon_->GetCommandList());
 		i++;
 	}
-
+	goal->Draw(dxCommon_->GetCommandList());
 }
 
 void GameScene::SetTitle()
@@ -382,14 +400,14 @@ void GameScene::SetTitle()
 	{
 		if (j == 0)
 		{
-			floor->SetScale({ 100,0.5,100 });
+			floor->SetScale({ 50,0.5,40 });
 			floor->SetPosition({ 0,0,0 });
 		}
-		//if (j == 1)
-		//{
-		//	floor->SetScale({ 10,0.5,10 });
-		//	floor->SetPosition({ 0,10,0 });
-		//}
+		if (j == 1)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ 300.0	,30.0	,40.0 });
+		}
 		//if (j == 2)
 		//{
 		//	floor->SetScale({ 10,0.5,10 });
@@ -401,7 +419,10 @@ void GameScene::SetTitle()
 		//	floor->SetPosition({ 10,20,0 });
 		//}
 		j++;
+		//ゴールセット
+		goal->SetTutorial();
 		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
+		player->SetCollisionGoal(goal->GetPosition(), goal->GetScale());	//ゴール
 		player->SetPosition0({0.0f,5.0f,0.0f});
 		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
