@@ -208,13 +208,29 @@ void GameScene::Update()
 
 	//デバッグ用 キー入力でステージ変更
 	if (input_->TriggerKey(DIK_0))stage = Stage::Tutorial;
-
+	if (input_->TriggerKey(DIK_1))stage = Stage::Stage1;
+	if (input_->TriggerKey(DIK_2))stage = Stage::Stage2;
+	if (input_->TriggerKey(DIK_3))stage = Stage::Stage3;
+	if (input_->TriggerKey(DIK_4))stage = Stage::Stage4;
+	if (input_->TriggerKey(DIK_5))stage = Stage::Stage5;
 
 	//前のシーンと今のシーンが違かったらリセット処理
 	if (scene_ != preScene_)
 	{
 		//タイトルをセット
 		if (scene_ == static_cast<size_t>(Scene::Title))SetTitle();
+	}
+
+	//前のステージと現在のステージが違かったらリセット処理
+	if (stage != preStage)
+	{
+		//チュートリアルに移動した場合
+		if (stage == Stage::Tutorial)	SetTitle();
+		if (stage == Stage::Stage1)		SetStage1();
+		if (stage == Stage::Stage2)		SetStage2();
+		if (stage == Stage::Stage3)		SetStage3();
+		if (stage == Stage::Stage4)		SetStage4();
+		if (stage == Stage::Stage5)		SetStage5();
 	}
 
 	//前のフレームのシーン取得
@@ -291,8 +307,73 @@ void GameScene::TitleDraw()
 
 }
 
+void GameScene::GameUpdate()
+{
+
+	//床更新
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		floor->Update();
+	}
+
+	//障害物更新
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		obstacle->Update();
+	}
+
+
+
+	//プレイヤー更新
+	player->Update();
+
+	//オブジェクト更新
+	skydomeObject->SetPosition(player->GetPosition0());
+	//skydomeObject->SetPosition({0.0f,0.0f,0.0f});
+	skydomeObject->SetScale({ 900.0f,900.0f,900.0f });
+	skydomeObject->SetRotation({ 0.0f,0.0f,0.0f });
+	skydomeObject->Update();
+	//camera_->SetTarget(player->GetPosition0());
+	camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+	//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+	camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+	//カメラ更新
+	camera_->Update();
+}
+
+void GameScene::GameDraw()
+{
+	if (input_->TriggerKey(DIK_R)) {
+		clearTutoFlag = false;
+		clear1Flag = false;
+		clear2Flag = false;
+		clear3Flag = false;
+		clear4Flag = false;
+		clear5Flag = false;
+		SetTitle();
+	}
+
+	//障害物描画
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		obstacle->Draw(dxCommon_->GetCommandList());
+	}
+
+	player->Draw(dxCommon_->GetCommandList());
+	skydomeObject->Draw(dxCommon_->GetCommandList());
+	//床描画
+	int i = 0;
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		if (i == 0)floor->Draw(dxCommon_->GetCommandList());
+		i++;
+	}
+
+}
+
 void GameScene::SetTitle()
 {
+	player->ClearCollision();
 	//camera_->SetCamera();
 	
 	//床セット
@@ -435,16 +516,249 @@ void GameScene::DebugLoadCsv(const wchar_t* fileName, int obstacleVal)
 	}
 }
 
+void GameScene::SetStage1()
+{
+	player->ClearCollision();
+	//camera_->SetCamera();
+
+	//床セット
+	int j = 0;
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		if (j == 0)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ 0,0,0 });
+		}
+		//if (j == 1)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 0,10,0 });
+		//}
+		//if (j == 2)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		//if (j == 3)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		j++;
+		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
+		player->SetPosition0({ 0.0f,5.0f,0.0f });
+		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+	}
+	//障害物読み込み
+	LoadCsv(L"Resources/obstacleTutorial1.csv", tutorialObstacleVal1);
+
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
+	}
 
 
+}
+
+void GameScene::SetStage2()
+{
+	player->ClearCollision();
+	//camera_->SetCamera();
+
+	//床セット
+	int j = 0;
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		if (j == 0)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ 0,0,0 });
+		}
+		//if (j == 1)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 0,10,0 });
+		//}
+		//if (j == 2)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		//if (j == 3)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		j++;
+		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
+		player->SetPosition0({ 0.0f,5.0f,0.0f });
+		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+	}
+	//障害物読み込み
+	LoadCsv(L"Resources/obstacleTutorial2.csv", tutorialObstacleVal2);
+
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
+	}
+
+
+}
+
+void GameScene::SetStage3()
+{
+	player->ClearCollision();
+	//camera_->SetCamera();
+
+	//床セット
+	int j = 0;
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		if (j == 0)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ 0,0,0 });
+		}
+		//if (j == 1)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 0,10,0 });
+		//}
+		//if (j == 2)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		//if (j == 3)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		j++;
+		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
+		player->SetPosition0({ 0.0f,5.0f,0.0f });
+		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+	}
+	//障害物読み込み
+	LoadCsv(L"Resources/obstacleTutorial3.csv", tutorialObstacleVal3);
+
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
+	}
+
+
+}
+
+void GameScene::SetStage4()
+{
+	player->ClearCollision();
+	//camera_->SetCamera();
+
+	//床セット
+	int j = 0;
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		if (j == 0)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ 0,0,0 });
+		}
+		//if (j == 1)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 0,10,0 });
+		//}
+		//if (j == 2)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		//if (j == 3)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		j++;
+		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
+		player->SetPosition0({ 0.0f,5.0f,0.0f });
+		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+	}
+	//障害物読み込み
+	LoadCsv(L"Resources/obstacleTutorial4.csv", tutorialObstacleVal4);
+
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
+	}
+
+
+}
+
+void GameScene::SetStage5()
+{
+	player->ClearCollision();
+	//camera_->SetCamera();
+
+	//床セット
+	int j = 0;
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		if (j == 0)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ 0,0,0 });
+		}
+		//if (j == 1)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 0,10,0 });
+		//}
+		//if (j == 2)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		//if (j == 3)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		j++;
+		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
+		player->SetPosition0({ 0.0f,5.0f,0.0f });
+		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+	}
+	//障害物読み込み
+	LoadCsv(L"Resources/obstacleTutorial5.csv", tutorialObstacleVal5);
+
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
+	}
+
+
+}
 void (GameScene::* GameScene::Scene_[])() =
 {
 	&GameScene::TitleUpdate,
+	&GameScene::GameUpdate,
 
 };
 
 void (GameScene::* GameScene::SceneDraw_[])() =
 {
-	&GameScene::TitleDraw,
+	&GameScene::GameDraw,
 
 };

@@ -100,7 +100,7 @@ void Player::UpdateMove()
 	if (input->PushKey(DIK_SPACE) && groundFlag0 == true && playerState == front)
 	{
 		//Ú’nƒtƒ‰ƒO‚ğfalse‚É
-		fallTimer0 = -1;
+		fallTimer0 = -1.1f;
 		groundFlag0 = false;
 	}
 
