@@ -28,7 +28,7 @@ void Player::Initialize()
 
 
 	hitboxPosition0.x = position0.x;
-	hitboxPosition0.y = position0.y + 6;
+	hitboxPosition0.y = position0.y ;
 	hitboxPosition0.z = position0.z;
 	hitboxRotation0 = { 0.0f,0.0f,0.0f };
 	hitboxScale0 = { 3.0f,12.0f,3.0f };
@@ -62,7 +62,7 @@ void Player::Update()
 
 	//hitboxの座標調整
 	hitboxPosition0.x = position0.x;
-	hitboxPosition0.y = position0.y + 6;
+	hitboxPosition0.y = position0.y + 6.0f;
 	hitboxPosition0.z = position0.z;
 
 
@@ -85,16 +85,16 @@ void Player::Update()
 void Player::UpdateMove()
 {
 	if (input->PushKey(DIK_W)) {
-		position0.x += 1.0f;
+		position0.x += 0.5f;
 	}
 	if (input->PushKey(DIK_S)) {
-		position0.x -= 1.0f;
+		position0.x -= 0.5f;
 	}
 	if (input->PushKey(DIK_A)) {
-		position0.z += 1.0f;
+		position0.z += 0.5f;
 	}
 	if (input->PushKey(DIK_D)) {
-		position0.z -= 1.0f;
+		position0.z -= 0.5f;
 	}
 
 	if (input->PushKey(DIK_SPACE) && groundFlag0 == true && playerState == front)
@@ -121,7 +121,8 @@ void Player::UpdateMove()
 }
 void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 {
-	object0->Draw(cmdList);
+	//object0->Draw(cmdList);
+	cubeObject0->Draw(cmdList);
 	/*cubeObject0->Draw(cmdList);
 	cubeObject1->Draw(cmdList);*/
 }
@@ -163,90 +164,71 @@ void Player::UpdateCollision()
 		if (collision->GetPosition().y >= 0)
 		{
 			XMFLOAT3 h = { hitboxPosition0.x,hitboxPosition0.y + 3,hitboxPosition0.z };
-			//左からぶつかる場合
-			if (-2 + velocity0.x <= Max0.x - collision->GetMin().x && Max0.x - collision->GetMin().x <= 2 + velocity0.x)
-			{
-				while (collision->Update(h, hitboxScale0) == 1)
-				{
-					position0.x -= 0.0002f;
-					hitboxPosition0.x -= 0.0002f;
-					h.x -= 0.0002f;
+		// Side collision only occurs if the player is not below the obstacle
+// Only process side collisions if the player is above the obstacle or close to it
+			// Allow side collisions only if the player is at or above the obstacle's minimum Y
+			/*if (position0.y >= collision->GetMin().y) {*/
+				// Left side collision
+				if (-2 + velocity0.x <= Max0.x - collision->GetMin().x && Max0.x - collision->GetMin().x <= 2 + velocity0.x) {
+					while (collision->Update(h, hitboxScale0) == 1) {
+						position0.x -= 0.0002f;  // Push left
+						hitboxPosition0.x -= 0.0002f;
+						h.x -= 0.0002f;
+					}
 				}
-			}
-			//右からぶつかる場合
-			if (-2 + velocity0.x <= Min0.x - collision->GetMax().x && Min0.x - collision->GetMax().x <= 2 + velocity0.x)
-			{
-				while (collision->Update(h, hitboxScale0) == 1)
-				{
-					position0.x += 0.0002f;
-					hitboxPosition0.x += 0.0002f;
-					h.x += 0.0002f;
+
+				// Right side collision
+				if (-2 + velocity0.x <= Min0.x - collision->GetMax().x && Min0.x - collision->GetMax().x <= 2 + velocity0.x) {
+					while (collision->Update(h, hitboxScale0) == 1) {
+						position0.x += 0.0002f;  // Push right
+						hitboxPosition0.x += 0.0002f;
+						h.x += 0.0002f;
+					}
 				}
-			}
-			//前からぶつかる場合
-			if (-2 + velocity0.z <= Max0.z - collision->GetMin().z && Max0.z - collision->GetMin().z <= 2 + velocity0.z)
-			{
-				while (collision->Update(h, hitboxScale0) == 1)
-				{
-					position0.z -= 0.0002f;
-					hitboxPosition0.z -= 0.0002f;
-					h.z -= 0.0002f;
+
+				// Front side collision (Z axis)
+				if (-2 + velocity0.z <= Max0.z - collision->GetMin().z && Max0.z - collision->GetMin().z <= 2 + velocity0.z) {
+					while (collision->Update(h, hitboxScale0) == 1) {
+						position0.z -= 0.0002f;  // Push back
+						hitboxPosition0.z -= 0.0002f;
+						h.z -= 0.0002f;
+					}
 				}
-			}
-			//後ろからぶつかる場合
-			if (-2 + velocity0.z <= Min0.z - collision->GetMax().z && Min0.z - collision->GetMax().z <= 2 + velocity0.z)
-			{
-				while (collision->Update(h, hitboxScale0) == 1)
-				{
-					position0.z += 0.0002f;
-					hitboxPosition0.z += 0.0002f;
-					h.z += 0.0002f;
+
+				// Back side collision (Z axis)
+				if (-2 + velocity0.z <= Min0.z - collision->GetMax().z && Min0.z - collision->GetMax().z <= 2 + velocity0.z) {
+					while (collision->Update(h, hitboxScale0) == 1) {
+						position0.z += 0.0002f;  // Push forward
+						hitboxPosition0.z += 0.0002f;
+						h.z += 0.0002f;
+					}
 				}
-			}
-			//上から
-			//if (collision->Update(h, hitboxScale0) == 1)
-			//{
-			//	//接地フラグを立てる
-			//	groundFlag0 = true;
-			//	//自由落下Tの値をリセット
-			//	fallTimer0 = 0;
-			//	//前のフレームと接地フラグが異なれは
-			//	if (groundFlag0 != preGroundFlag0)
-			//	{
-			//		playerState = back;
-			//	}
-			//	while (collision->Update(h, hitboxScale0) == 1)
-			//	{
-			//		//めり込んだらプレイヤーの状態を変更
-			//		position0.y += 0.002f;
-			//		hitboxPosition0.y += 0.002f;
-			//		h.y += 0.002f;
-			//	}
 			//}
 
-			if (collision->Update(h, hitboxScale0) == 1)
-			{
-				//接地フラグを立てる
-				groundFlag0 = true;
-				//自由落下Tの値をリセット
-				fallTimer0 = 0;
-				//落下ベクトルをリセット
-				fallVelocity0.y = 0;
-			}
-			//めり込まなくなりまで加算
-			while (collision->Update(h, hitboxScale0) == 1)
-			{
-				//めり込んだらプレイヤーの状態を変更
-				if (groundFlag0 != preGroundFlag0)
-				{
-					/*changeFlag = true;*/
-					/*playerState = back;*/
+			if (position0.y < collision->GetMin().y - 10.0f) {
+				// Player is below the obstacle, prevent pushing upwards
+				while (collision->Update(h, hitboxScale0) == 1) {
+					position0.y -= 0.002f; // Push down instead of up
+					hitboxPosition0.y -= 0.002f;
+					h.y -= 0.002f;
 				}
-				position0.y += 0.002f;
-				hitboxPosition0.y += 0.002f;
-				h.y += 0.002f;
+			}
+			if (position0.y > collision->GetMin().y) {
+			if (collision->Update(h, hitboxScale0) == 1) {
+				// Handle normal collision if the player is above or at the obstacle
+				groundFlag0 = true;
+				fallTimer0 = 0;
+				fallVelocity0.y = 0;
+
+				while (collision->Update(h, hitboxScale0) == 1) {
+					position0.y += 0.002f; // Push up if necessary
+					hitboxPosition0.y += 0.002f;
+					h.y += 0.002f;
+				}
+			}
 			}
 		}
+
 #pragma endregion
 
 	}

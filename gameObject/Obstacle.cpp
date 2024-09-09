@@ -20,7 +20,7 @@ void Obstacle::Initialize()
 	hitboxPosition.y = position.y;
 	hitboxPosition.z = position.z;
 	hitboxRotation = { 0.0f,0.0f,0.0f };
-	hitboxScale = { 6.0f,6.0f,6.0f };
+	hitboxScale = { 9.0f,3.0f,9.0f };
 }
 
 void Obstacle::Update()
@@ -57,5 +57,5 @@ void Obstacle::SetHitbox()
 	hitboxPosition.y = position.y + 3;
 	hitboxPosition.z = position.z;
 	hitboxRotation = { 0.0f,0.0f,0.0f };
-	hitboxScale = { 6.0f,6.0f,6.0f };
+	hitboxScale = { 11.0f,3.0f,11.0f };
 }

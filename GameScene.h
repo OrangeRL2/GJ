@@ -68,6 +68,7 @@ private:
 	FbxModel* goalModel = nullptr;
 	//鍵のモデル
 	FbxModel* keyModel = nullptr;
+	FbxModel* skydome = nullptr;
 
 	//ステージとかタイトルのモデル
 	//タイトル
@@ -93,7 +94,7 @@ private:
 
 	//キューブ(hitbox用)
 	std::unique_ptr<CubeModel> hitBoxModel;
-
+	FbxObject3D* skydomeObject = nullptr;
 	//----------自作クラス---------
 	//プレイヤー
 	std::unique_ptr<Player> player;
@@ -161,7 +162,7 @@ private:
 	//tutorial
 	size_t tutorialObstacleVal = 9;
 	size_t tutorialObstacleVal1 = 9;
-	size_t tutorialObstacleVal2 = 21;
+	size_t tutorialObstacleVal2 = 20;
 	size_t tutorialObstacleVal3 = 24;
 	size_t tutorialObstacleVal4 = 126;
 	size_t tutorialObstacleVal5 = 126;

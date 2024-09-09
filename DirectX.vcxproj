@@ -176,6 +176,7 @@
     <ClCompile Include="math\Quaternion.cpp" />
     <ClCompile Include="math\Vector3.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Skydome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3D\Collision.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="math\Quaternion.h" />
     <ClInclude Include="math\Vector3.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Skydome.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

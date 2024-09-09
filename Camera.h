@@ -37,7 +37,7 @@ public:
 	//更新
 	void Update();
 	void SetCamera();
-	
+
 
 	//タイトル、ステージセレクトの挙動
 	void StageSelect(DirectX::XMFLOAT3 pos, int playerState);
@@ -82,7 +82,7 @@ private:
 	float changePosY = 10.0f;
 
 	//プレイヤー追尾状態の際のY座標
-	float eyeTitleY = 50.0f;
+	float eyeTitleY = 30.0f;
 	float targetTitlePosY = 20.0f;
 
 	//視点を変える用の変数
@@ -99,7 +99,7 @@ private:
 	//角度
 	float changeRotX;
 	float changeRotZ;
-	float changeRot = (float)PI * 1/2;
+	float changeRot = (float)PI * 1 / 2;
 	//カメラの入れ替えにかけるフレーム
 	float changeTime = 30.0f;
 	float changeTimer = 0.0f;
