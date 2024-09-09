@@ -26,7 +26,6 @@ void Player::Initialize()
 	cubeObject0.reset(newCubeObject);
 	cubeObject0->SetModel(cubeModel);
 
-
 	hitboxPosition0.x = position0.x;
 	hitboxPosition0.y = position0.y ;
 	hitboxPosition0.z = position0.z;

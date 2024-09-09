@@ -172,6 +172,7 @@
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="Magma.cpp" />
+    <ClCompile Include="MagmaBlock.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\Math2.cpp" />
     <ClCompile Include="math\Matrix4.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="Magma.h" />
+    <ClInclude Include="MagmaBlock.h" />
     <ClInclude Include="math\Math2.h" />
     <ClInclude Include="math\Matrix4.h" />
     <ClInclude Include="math\Quaternion.h" />

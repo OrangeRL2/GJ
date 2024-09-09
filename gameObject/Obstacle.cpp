@@ -43,8 +43,7 @@ void Obstacle::Update()
 	cubeObject->SetScale(hitboxScale);
 	cubeObject->SetRotation(hitboxRotation);
 	cubeObject->Update();
-	position.y -= 0.001f;
-	hitboxPosition.y -= 0.001f;
+	
 }
 
 void Obstacle::Draw(ID3D12GraphicsCommandList* cmdList)

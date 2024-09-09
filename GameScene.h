@@ -11,9 +11,11 @@
 #include "Collision.h"
 #include "Camera.h"
 #include "Obstacle.h"
+#include "Magma.h"
 #include "Sprite.h"
 #include "Floor.h"
 #include "Player.h"
+#include "MagmaBlock.h"
 #include "Goal.h"
 class GameScene
 {
@@ -46,8 +48,10 @@ public:
 
 	//スペースキーでファイル読み込みを実行する関数
 	void LoadCsv(const wchar_t* fileName, int obstacleVal);
+	void LoadCsvMagma(const wchar_t* fileName, int magmaVal);
 	void DebugLoadCsv(const wchar_t* fileName, int obstacleVal);
 
+	void Collision();
 	//メンバ変数
 private:
 	//デバイスとinput
@@ -68,6 +72,7 @@ private:
 	FbxModel* goalModel = nullptr;
 	//鍵のモデル
 	FbxModel* keyModel = nullptr;
+	FbxModel* lavaModel = nullptr;
 	FbxModel* skydome = nullptr;
 
 	//ステージとかタイトルのモデル
@@ -98,9 +103,13 @@ private:
 	//----------自作クラス---------
 	//プレイヤー
 	std::unique_ptr<Player> player;
-
+	
 	//障害物
 	std::list<std::unique_ptr<Obstacle>> obstacles;
+	//まぐまのゾーン
+	std::list<std::unique_ptr<Magma>> magmas;
+	//マグマの障害物
+	std::unique_ptr<MagmaBlock> magmaBlock;
 	//障害物の数
 	size_t obstacleVal = 350;
 	//床
@@ -169,6 +178,8 @@ private:
 	size_t tutorialObstacleVal5 = 126;
 	size_t stage1ObstacleVal = 5;
 
+	//magma
+	size_t magmaVal2 = 20;
 	float num = 0;
 
 	//クリアーフラッグ

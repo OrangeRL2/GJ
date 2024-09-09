@@ -19,6 +19,7 @@ public:
 	//XV
 	void Initialize();
 	void Update();
+	void Teleport();
 	//•`‰æ
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 

@@ -64,6 +64,7 @@ public:
 	DirectX::XMFLOAT3 GetPosition0() { return position0; }
 	DirectX::XMFLOAT3 GetRotation0() { return rotation0; }
 	DirectX::XMFLOAT3 GetScale0() { return scale0; }
+	
 
 	//hitbox
 	DirectX::XMFLOAT3 GetHitboxPosition0() { return hitboxPosition0; }

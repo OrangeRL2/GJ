@@ -41,6 +41,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	//モデル名を指定してファイル読み込み
 	model1 = FbxLoader::GetInstance()->LoadModelFromFile("Walking", "Resources/red.png");
 	stoneModel = FbxLoader::GetInstance()->LoadModelFromFile("stone", "Resources/dirt.png");
+	lavaModel = FbxLoader::GetInstance()->LoadModelFromFile("stone", "Resources/lava.png");
 	skydome = FbxLoader::GetInstance()->LoadModelFromFile("skydome", "Resources/skydome.png");
 
 
@@ -69,6 +70,10 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	//障害物
 	Obstacle::SetDevice(dxCommon_->GetDevice());
 	Obstacle::SetCamera(camera_.get());
+
+	//マグマ
+	Magma::SetDevice(dxCommon_->GetDevice());
+	Magma::SetCamera(camera_.get());
 
 	//床
 	Floor::SetDevice(dxCommon_->GetDevice());
@@ -167,6 +172,64 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 		newObstacle->Initialize();
 		obstacles.push_back(std::move(newObstacle));
 	}
+
+#pragma endregion
+
+#pragma region マグマ初期化
+
+	//ファイル読み込み
+	std::stringstream magmaPosList;	//文字列
+	std::vector<DirectX::XMFLOAT3>magmaPos;
+	//ファイルを開く
+	std::ifstream file2;
+	file2.open("Resources/obstacleStage1.csv");
+	//ファイルの内容をコピー
+	magmaPosList << file2.rdbuf();
+	//ファイルを閉じる
+	file2.close();
+
+	std::string line2;
+
+	//ファイルから障害物の場所を読み込み
+	while (getline(magmaPosList, line2, '{'))
+	{
+		//1行分の文字列をストリームに変換して解析しやすくする
+		std::istringstream line_stream(line2);
+		std::string word1;
+		std::string word2;
+		std::string word3;
+		//カンマ区切りで先頭文字列を取得
+		getline(line_stream, word1, ',');
+		getline(line_stream, word2, ',');
+		getline(line_stream, word3, ',');
+		DirectX::XMFLOAT3 pos(atoi(word1.c_str()), atoi(word2.c_str()), atoi(word3.c_str()));
+		magmaPos.push_back(pos);
+	}
+	//マグマ初期化
+	for (int i = 1; i <= obstacleVal; i++)
+	{
+		std::unique_ptr<Magma>newMagma = std::make_unique<Magma>();
+		newMagma->SetModel(stoneModel);
+		newMagma->SetCubeModel(hitBoxModel.get());
+		//ファイル読み込みで得た座標を代入
+		newMagma->SetPosition({ 0,0,-10000 });
+		newMagma->SetScale({ 0.11f,0.03f,0.11f });
+		newMagma->Initialize();
+		magmas.push_back(std::move(newMagma));
+	}
+
+#pragma endregion
+#pragma region マグマブロック初期化
+
+	//マグマーセット
+	MagmaBlock::SetDevice(dxCommon_->GetDevice());
+	MagmaBlock::SetCamera(camera_.get());
+	MagmaBlock::SetInput(input_);
+	//プレイヤー初期化
+	MagmaBlock* newMagma = new MagmaBlock();
+	newMagma->SetModel(lavaModel);
+	newMagma->Initialize();
+	magmaBlock.reset(newMagma);
 
 #pragma endregion
 
@@ -275,11 +338,16 @@ void GameScene::TitleUpdate()
 	{
 		obstacle->Update();
 	}
+	//マグマ
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		magma->Update();
+	}
 
-
-
+	Collision();
 	//プレイヤー更新
 	player->Update();
+	magmaBlock->Update();
 	goal->Update();
 	//オブジェクト更新
 	skydomeObject->SetPosition(player->GetPosition0());
@@ -312,8 +380,15 @@ void GameScene::TitleDraw()
 	{
 		obstacle->Draw(dxCommon_->GetCommandList());
 	}
+
+	//マグマ
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		magma->Draw(dxCommon_->GetCommandList());
+	}
 	goal->Draw(dxCommon_->GetCommandList());
 	player->Draw(dxCommon_->GetCommandList());
+	magmaBlock->Draw(dxCommon_->GetCommandList());
 	skydomeObject->Draw(dxCommon_->GetCommandList());
 	//床描画
 	int i = 0;
@@ -340,10 +415,15 @@ void GameScene::GameUpdate()
 		obstacle->Update();
 	}
 
-
+	//マグマ更新
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		magma->Update();
+	}
 
 	//プレイヤー更新
 	player->Update();
+	magmaBlock->Update();
 	goal->Update();
 	//オブジェクト更新
 	skydomeObject->SetPosition(player->GetPosition0());
@@ -376,8 +456,13 @@ void GameScene::GameDraw()
 	{
 		obstacle->Draw(dxCommon_->GetCommandList());
 	}
-
+	//マグマ描画
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		magma->Draw(dxCommon_->GetCommandList());
+	}
 	player->Draw(dxCommon_->GetCommandList());
+	magmaBlock->Draw(dxCommon_->GetCommandList());
 	skydomeObject->Draw(dxCommon_->GetCommandList());
 	//床描画
 	int i = 0;
@@ -430,13 +515,17 @@ void GameScene::SetTitle()
 	}
 	//障害物読み込み
 	LoadCsv(L"Resources/obstacleTutorial2.csv", tutorialObstacleVal2);
+	LoadCsvMagma(L"Resources/magmaStage1.csv", magmaVal2);
 
 	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
 	{
 		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
 	}
 
-
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		//player->SetCollisionObstacle(magma->GetHitboxPosition(), magma->GetHitboxScale());	//マグマ
+	}
 }
 
 
@@ -483,6 +572,54 @@ void GameScene::LoadCsv(const wchar_t* fileName, int obstacleVal)
 		{
 			obstacle->SetPosition({ 0,0,-10000 });
 			obstacle->SetHitbox();
+		}
+		i++;
+	}
+}
+
+void GameScene::LoadCsvMagma(const wchar_t* fileName, int obstacleVal)
+{
+	//ファイル読み込み
+	std::stringstream obstaclePosList;	//文字列
+	std::vector<DirectX::XMFLOAT3>obstaclePos;
+	//ファイルを開く
+	std::ifstream file;
+	file.open(fileName);
+	//ファイルの内容をコピー
+	obstaclePosList << file.rdbuf();
+	//ファイルを閉じる
+	file.close();
+
+	std::string line;
+
+	//ファイルから障害物の場所を読み込み
+	while (getline(obstaclePosList, line, '{'))
+	{
+		//1行分の文字列をストリームに変換して解析しやすくする
+		std::istringstream line_stream(line);
+		std::string word1;
+		std::string word2;
+		std::string word3;
+		//カンマ区切りで先頭文字列を取得
+		getline(line_stream, word1, ',');
+		getline(line_stream, word2, ',');
+		getline(line_stream, word3, ',');
+		DirectX::XMFLOAT3 pos(atoi(word1.c_str()), atoi(word2.c_str()), atoi(word3.c_str()));
+		obstaclePos.push_back(pos);
+	}
+
+	int i = 1;
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		if (i <= obstacleVal)
+		{
+			magma->SetPosition({ obstaclePos[i].x,obstaclePos[i].y,obstaclePos[i].z });
+			magma->SetHitbox();
+		}
+		else
+		{
+			magma->SetPosition({ 0,0,-10000 });
+			magma->SetHitbox();
 		}
 		i++;
 	}
@@ -780,6 +917,36 @@ void (GameScene::* GameScene::Scene_[])() =
 
 void (GameScene::* GameScene::SceneDraw_[])() =
 {
+	&GameScene::TitleDraw,
 	&GameScene::GameDraw,
 
 };
+
+void GameScene::Collision() {
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+	if (magma->GetPosition().x - player->GetPosition0().x < 5 &&
+		-5 < magma->GetPosition().x - player->GetPosition0().x) {
+		if (magma->GetPosition().y - player->GetPosition0().y < 5 &&
+			-5 < magma->GetPosition().y - player->GetPosition0().y) {
+			if (magma->GetPosition().z - player->GetPosition0().z < 5 &&
+				-5 < magma->GetPosition().z - player->GetPosition0().z) {
+				magmaBlock->SetPosition({ magma->GetPosition().x + 10.0f,magma->GetPosition().y - 50.0f, magma->GetPosition().z });
+				magmaBlock->SetEruptFlag();
+				magma->Teleport();
+			}
+		}
+	}
+
+	if (magmaBlock->GetPosition().x - player->GetPosition0().x < 5 &&
+		-5 < magmaBlock->GetPosition().x - player->GetPosition0().x) {
+		if (magmaBlock->GetPosition().y - player->GetPosition0().y < 5 &&
+			-5 < magmaBlock->GetPosition().y - player->GetPosition0().y) {
+			if (magmaBlock->GetPosition().z - player->GetPosition0().z < 5 &&
+				-5 < magmaBlock->GetPosition().z - player->GetPosition0().z) {
+				player->SetPosition0({ 0,0,0 });
+			}
+		}
+	}
+	}
+}
