@@ -122,8 +122,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 		std::unique_ptr<Floor>newFloor = std::make_unique<Floor>();
 		newFloor->SetCubeModel(cubeModel.get());
 		newFloor->Initialize();
-		newFloor->SetScale({ 120,0.5,120 });
-		newFloor->SetPosition({ 0,0,0 });
+		newFloor->SetScale({ 10,0.5,10 });
+		newFloor->SetPosition({ -5,0,20 });
 		floors.push_back(std::move(newFloor));
 	}
 
@@ -271,6 +271,15 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 
 #pragma endregion
 
+#pragma region lavaFloor
+
+	//オブジェクト初期化
+	lavaFloor = new FbxObject3D;
+	lavaFloor->Initialize();
+	lavaFloor->SetModel(lavaModel);
+
+#pragma endregion
+
 	SetTitle();
 
 }
@@ -343,22 +352,31 @@ void GameScene::TitleUpdate()
 	{
 		magma->Update();
 	}
-
+	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
+	{
+		magma->Update();
+	}
 	Collision();
 	//プレイヤー更新
 	player->Update();
+
 	magmaBlock->Update();
 	goal->Update();
 	//オブジェクト更新
 	skydomeObject->SetPosition(player->GetPosition0());
-	//skydomeObject->SetPosition({0.0f,0.0f,0.0f});
 	skydomeObject->SetScale({900.0f,900.0f,900.0f});
 	skydomeObject->SetRotation({0.0f,0.0f,0.0f});
 	skydomeObject->Update();
+	
+	lavaRot += 0.006f;
+	lavaFloor->SetPosition({0.0f,-150.0f,0.0f});
+	lavaFloor->SetScale({ 50.0f,1.0f,50.0f });
+	lavaFloor->SetRotation({0.0f,lavaRot,0.0f });
+	lavaFloor->Update();
 	//camera_->SetTarget(player->GetPosition0());
 	camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 	//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
-	camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y+10.0f,camera_->GetEye().z });
+	camera_->SetEye({ camera_->GetEye().x - 10.0f,player->GetPosition0().y+100.0f,camera_->GetEye().z });
 	//カメラ更新
 	camera_->Update();
 }
@@ -389,12 +407,17 @@ void GameScene::TitleDraw()
 	goal->Draw(dxCommon_->GetCommandList());
 	player->Draw(dxCommon_->GetCommandList());
 	magmaBlock->Draw(dxCommon_->GetCommandList());
+	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
+	{
+		magma->Draw(dxCommon_->GetCommandList());
+	}
 	skydomeObject->Draw(dxCommon_->GetCommandList());
+	lavaFloor->Draw(dxCommon_->GetCommandList());
 	//床描画
 	int i = 0;
 	for (std::unique_ptr<Floor>& floor : floors)
 	{
-		if (i == 0)floor->Draw(dxCommon_->GetCommandList());
+		if (i >= 0)floor->Draw(dxCommon_->GetCommandList());
 		i++;
 	}
 	
@@ -424,6 +447,10 @@ void GameScene::GameUpdate()
 	//プレイヤー更新
 	player->Update();
 	magmaBlock->Update();
+	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
+	{
+		magma->Update();
+	}
 	goal->Update();
 	//オブジェクト更新
 	skydomeObject->SetPosition(player->GetPosition0());
@@ -431,10 +458,15 @@ void GameScene::GameUpdate()
 	skydomeObject->SetScale({ 900.0f,900.0f,900.0f });
 	skydomeObject->SetRotation({ 0.0f,0.0f,0.0f });
 	skydomeObject->Update();
+
+	lavaFloor->SetPosition({0.0f,20.0f,0.0f});
+	lavaFloor->SetScale({ 900.0f,0.5f,900.0f });
+	lavaFloor->SetRotation({ 0.0f,0.0f,0.0f });
+	lavaFloor->Update();
 	//camera_->SetTarget(player->GetPosition0());
 	camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 	//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
-	camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+	camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 100.0f,camera_->GetEye().z });
 	//カメラ更新
 	camera_->Update();
 }
@@ -462,8 +494,12 @@ void GameScene::GameDraw()
 		magma->Draw(dxCommon_->GetCommandList());
 	}
 	player->Draw(dxCommon_->GetCommandList());
-	magmaBlock->Draw(dxCommon_->GetCommandList());
+	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
+	{
+		magma->Draw(dxCommon_->GetCommandList());
+	}
 	skydomeObject->Draw(dxCommon_->GetCommandList());
+	lavaFloor->Draw(dxCommon_->GetCommandList());
 	//床描画
 	int i = 0;
 	for (std::unique_ptr<Floor>& floor : floors)
@@ -474,59 +510,7 @@ void GameScene::GameDraw()
 	goal->Draw(dxCommon_->GetCommandList());
 }
 
-void GameScene::SetTitle()
-{
-	player->ClearCollision();
-	//camera_->SetCamera();
-	
-	//床セット
-	int j = 0;
-	for (std::unique_ptr<Floor>& floor : floors)
-	{
-		if (j == 0)
-		{
-			floor->SetScale({ 50,0.5,40 });
-			floor->SetPosition({ 0,0,0 });
-		}
-		if (j == 1)
-		{
-			floor->SetScale({ 100,0.5,100 });
-			floor->SetPosition({ 300.0	,30.0	,40.0 });
-		}
-		//if (j == 2)
-		//{
-		//	floor->SetScale({ 10,0.5,10 });
-		//	floor->SetPosition({ 10,20,0 });
-		//}
-		//if (j == 3)
-		//{
-		//	floor->SetScale({ 10,0.5,10 });
-		//	floor->SetPosition({ 10,20,0 });
-		//}
-		j++;
-		//ゴールセット
-		goal->SetTutorial();
-		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
-		player->SetCollisionGoal(goal->GetPosition(), goal->GetScale());	//ゴール
-		player->SetPosition0({0.0f,5.0f,0.0f});
-		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
-		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
-		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
-	}
-	//障害物読み込み
-	LoadCsv(L"Resources/obstacleTutorial2.csv", tutorialObstacleVal2);
-	LoadCsvMagma(L"Resources/magmaStage1.csv", magmaVal2);
 
-	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
-	{
-		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
-	}
-
-	for (std::unique_ptr<Magma>& magma : magmas)
-	{
-		//player->SetCollisionObstacle(magma->GetHitboxPosition(), magma->GetHitboxScale());	//マグマ
-	}
-}
 
 
 void GameScene::LoadCsv(const wchar_t* fileName, int obstacleVal)
@@ -674,10 +658,14 @@ void GameScene::DebugLoadCsv(const wchar_t* fileName, int obstacleVal)
 	}
 }
 
-void GameScene::SetStage1()
+void GameScene::SetTitle()
 {
 	player->ClearCollision();
 	//camera_->SetCamera();
+	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
+	{
+		magma->RemoveErupt();
+	}
 
 	//床セット
 	int j = 0;
@@ -685,14 +673,14 @@ void GameScene::SetStage1()
 	{
 		if (j == 0)
 		{
-			floor->SetScale({ 100,0.5,100 });
-			floor->SetPosition({ 0,0,0 });
+			floor->SetScale({ 50,0.5,40 });
+			floor->SetPosition({ -10.0f,5.0f,30.0f });
 		}
-		//if (j == 1)
-		//{
-		//	floor->SetScale({ 10,0.5,10 });
-		//	floor->SetPosition({ 0,10,0 });
-		//}
+		if (j == 1)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ -40.0	,190.0	,40.0 });
+		}
 		//if (j == 2)
 		//{
 		//	floor->SetScale({ 10,0.5,10 });
@@ -704,20 +692,87 @@ void GameScene::SetStage1()
 		//	floor->SetPosition({ 10,20,0 });
 		//}
 		j++;
+		//ゴールセット
+		goal->SetTutorial();
 		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
-		player->SetPosition0({ 0.0f,5.0f,0.0f });
+		player->SetCollisionGoal(goal->GetPosition(), goal->GetScale());	//ゴール
+		player->SetPosition0({ -10.0f,5.0f,30.0f });
 		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
-		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
+		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 80.0f,camera_->GetEye().z });
 	}
 	//障害物読み込み
-	LoadCsv(L"Resources/obstacleTutorial1.csv", tutorialObstacleVal1);
+	LoadCsv(L"Resources/obstacleTutorial2.csv", tutorialObstacleVal2);
+	LoadCsvMagma(L"Resources/magmaStage2.csv", magmaVal2);
 
 	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
 	{
 		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
 	}
 
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		//player->SetCollisionObstacle(magma->GetHitboxPosition(), magma->GetHitboxScale());	//マグマ
+	}
+
+}
+
+void GameScene::SetStage1()
+{
+	player->ClearCollision();
+	//camera_->SetCamera();
+	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
+	{
+		magma->RemoveErupt();
+	}
+
+	//床セット
+	int j = 0;
+	for (std::unique_ptr<Floor>& floor : floors)
+	{
+		if (j == 0)
+		{
+			floor->SetScale({ 50,0.5,40 });
+			floor->SetPosition({ -10.0f,5.0f,30.0f });
+		}
+		if (j == 1)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ -40.0	,190.0	,40.0 });
+		}
+		//if (j == 2)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		//if (j == 3)
+		//{
+		//	floor->SetScale({ 10,0.5,10 });
+		//	floor->SetPosition({ 10,20,0 });
+		//}
+		j++;
+		//ゴールセット
+		goal->SetTutorial();
+		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
+		player->SetCollisionGoal(goal->GetPosition(), goal->GetScale());	//ゴール
+		player->SetPosition0({ -10.0f,5.0f,30.0f });
+		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 80.0f,camera_->GetEye().z });
+	}
+	//障害物読み込み
+	LoadCsv(L"Resources/gameStage1.csv", tutorialObstacleVal2);
+	LoadCsvMagma(L"Resources/magmaStage1.csv", magmaVal2);
+
+	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	{
+		player->SetCollisionObstacle(obstacle->GetHitboxPosition(), obstacle->GetHitboxScale());	//オブジェクト
+	}
+
+	for (std::unique_ptr<Magma>& magma : magmas)
+	{
+		//player->SetCollisionObstacle(magma->GetHitboxPosition(), magma->GetHitboxScale());	//マグマ
+	}
 
 }
 
@@ -758,7 +813,7 @@ void GameScene::SetStage2()
 		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
 	}
 	//障害物読み込み
-	LoadCsv(L"Resources/obstacleTutorial2.csv", tutorialObstacleVal2);
+	LoadCsv(L"Resources/gameStage1.csv", tutorialObstacleVal2);
 
 	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
 	{
@@ -931,22 +986,89 @@ void GameScene::Collision() {
 			-5 < magma->GetPosition().y - player->GetPosition0().y) {
 			if (magma->GetPosition().z - player->GetPosition0().z < 5 &&
 				-5 < magma->GetPosition().z - player->GetPosition0().z) {
-				magmaBlock->SetPosition({ magma->GetPosition().x + 10.0f,magma->GetPosition().y - 50.0f, magma->GetPosition().z });
-				magmaBlock->SetEruptFlag();
+				CreateEruption({ magma->GetPosition().x,magma->GetPosition().y - 400.0f, magma->GetPosition().z });
 				magma->Teleport();
 			}
 		}
 	}
-
-	if (magmaBlock->GetPosition().x - player->GetPosition0().x < 5 &&
-		-5 < magmaBlock->GetPosition().x - player->GetPosition0().x) {
-		if (magmaBlock->GetPosition().y - player->GetPosition0().y < 5 &&
-			-5 < magmaBlock->GetPosition().y - player->GetPosition0().y) {
-			if (magmaBlock->GetPosition().z - player->GetPosition0().z < 5 &&
-				-5 < magmaBlock->GetPosition().z - player->GetPosition0().z) {
-				player->SetPosition0({ 0,0,0 });
+	for (std::unique_ptr<MagmaBlock>& _magmaBlocks : magmaBlocks)
+	{
+		if				(_magmaBlocks->GetPosition().x - player->GetPosition0().x < 5 &&
+			-5 <		 _magmaBlocks->GetPosition().x - player->GetPosition0().x) {
+			if			(_magmaBlocks->GetPosition().y - player->GetPosition0().y < 100 &&
+				-300 <	 _magmaBlocks->GetPosition().y - player->GetPosition0().y) {
+				if		(_magmaBlocks->GetPosition().z - player->GetPosition0().z < 5 &&
+					-5 < _magmaBlocks->GetPosition().z - player->GetPosition0().z) {
+					SetTitle();
+				}
 			}
 		}
+		if (_magmaBlocks->GetPosition().y > player->GetPosition0().y) {
+			_magmaBlocks->RemoveErupt();
+		}
+
 	}
+	if (player->GetPosition0().y < -100) {
+		SetTitle();
+	}
+	}
+
+	diceTime++;
+	if (diceTime >= 500) {
+		diceFlag = true;
+		//diceTime = 0;
+	}
+	if (diceFlag == true) {
+		rollDice();
+		
+		diceRoll = rollDice();
+		diceTime = 0;
+		DiceResult();
+		diceFlag = false;
+	}
+	// Perform the action based on the dice roll
+	for (auto it = magmaBlocks.begin(); it != magmaBlocks.end();)
+	{
+		// Check if the block's position meets the condition relative to the player's position
+		if ((*it)->GetPosition().y >= player->GetPosition0().y)
+		{
+			// The condition is met, so remove this block from the vector
+			it = magmaBlocks.erase(it);  // Erase and get the next iterator
+		}
+		else
+		{
+			++it;  // Only increment if no removal occurs
+		}
+	}
+}
+
+void GameScene::CreateEruption(XMFLOAT3 pos) {
+	std::unique_ptr<MagmaBlock>newObject = std::make_unique<MagmaBlock>();
+	newObject->SetModel(lavaModel);
+	newObject->SetPosition({pos.x,pos.y,pos.z });
+	//newObject->SetScale({pos.x,pos.y,pos.z });
+	newObject->Initialize();
+	newObject->SetEruptFlag();
+	magmaBlocks.push_back(std::move(newObject));
+	diceRoll = 0;
+}
+
+void GameScene::DiceResult() {
+	switch (diceRoll) {
+	case ACTION_ONE:
+		//if(diceFlag==true)
+		CreateEruption({ player->GetPosition0().x +10,player->GetPosition0().y - 400.0f, player->GetPosition0().z });
+		//diceRoll = 0;
+		break;
+	case ACTION_TWO:
+		CreateEruption({ player->GetPosition0().x + 0.0f,player->GetPosition0().y - 400.0f, player->GetPosition0().z + 10.0f });
+		//diceRoll = 0;
+		break;
+	case ACTION_THREE:
+		CreateEruption({ player->GetPosition0().x,player->GetPosition0().y - 400.0f, player->GetPosition0().z - 10.0f });
+		//diceRoll = 0;
+		break;
+	default:
+		break;
 	}
 }

@@ -26,6 +26,7 @@ public:
 	void Update();
 
 	void Erupt();
+	void RemoveErupt();
 	//描画
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 	//モデルセット
@@ -42,6 +43,7 @@ public:
 	DirectX::XMFLOAT3 GetPosition() { return position; }
 	DirectX::XMFLOAT3 GetRotation() { return rotation; }
 	DirectX::XMFLOAT3 GetScale() { return scale; }
+	bool GetDelete() { return magmaDelete; }
 private:
 	//デバイス
 	static ID3D12Device* device;
@@ -63,11 +65,12 @@ private:
 	std::list<std::unique_ptr<Collision>> collisionsGoal;
 
 	//変形行列
-	DirectX::XMFLOAT3 position = { 0.0f,100.0f,0.0f };
+	DirectX::XMFLOAT3 position = { 0.0f,100.0f,100.0f };
 	DirectX::XMFLOAT3 rotation = { 0.0f,0.0f,0.0f };
-	DirectX::XMFLOAT3 scale = { 0.1f,0.1f,0.1f };
+	DirectX::XMFLOAT3 scale = { 0.1f,4.0f,0.1f };
 
 	bool eruptFlag = false;
+	bool magmaDelete = false;
 	float shakeTimer = 0.0f;
 };
 

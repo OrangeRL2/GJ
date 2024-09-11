@@ -37,27 +37,27 @@ void MagmaBlock::Erupt()
 	if (eruptFlag == true) {
 		shakeTimer++;
 		if (shakeTimer == 1) {
-			position.y = 0.0f;
-			scale.y = 0.0f;
+			position.y = -400.0f;
+			//scale.y = 0.0f;
 		}
-		if (shakeTimer <= 50.0f) {
+		if (shakeTimer <= 100.0f && shakeTimer>=30.0f) {
 			position.x;
-			position.y+=2.0f;
+			position.y+=5.0f;
 			position.z;
-			scale.y += 0.1f;
+			//scale.y += 0.2f;
 		}
-		else if (shakeTimer >= 50.0f) {
+		else if (shakeTimer >= 100.0f) {
 			eruptFlag = false;
 			shakeTimer = 0.0f;
 			
 		}
 	}
 	else if(eruptFlag==false){
-	if (position.y >= 0.0f){
-		position.y -= 1.0f;
+	if (position.y >= -400.0f){
+		position.y += 2.0f;
 	}
 	if (scale.y >= 0.0f) {
-		scale.y -= 0.1f;
+		//scale.y -= 0.1f;
 	}
 	}
 }
@@ -65,4 +65,9 @@ void MagmaBlock::SetEruptFlag()
 {
 	eruptFlag = true;
 
+}
+void MagmaBlock::RemoveErupt()
+{
+	position.z = 100.0f;
+	magmaDelete == false;
 }

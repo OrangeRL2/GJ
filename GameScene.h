@@ -17,6 +17,7 @@
 #include "Player.h"
 #include "MagmaBlock.h"
 #include "Goal.h"
+#include <cstdlib> 
 class GameScene
 {
 	//メンバ関数
@@ -35,6 +36,8 @@ public:
 	void GameUpdate();
 	void GameDraw();
 
+	void CreateEruption(XMFLOAT3 pos);
+
 	//シーンごとのセット関数
 	//タイトルをセット
 	void SetTitle();
@@ -46,12 +49,15 @@ public:
 	void SetStage4();
 	void SetStage5();
 
+
 	//スペースキーでファイル読み込みを実行する関数
 	void LoadCsv(const wchar_t* fileName, int obstacleVal);
 	void LoadCsvMagma(const wchar_t* fileName, int magmaVal);
 	void DebugLoadCsv(const wchar_t* fileName, int obstacleVal);
 
 	void Collision();
+	int rollDice() {return (rand() % 3) + 1; }// Generate a random number between 1 and 6
+	void DiceResult();
 	//メンバ変数
 private:
 	//デバイスとinput
@@ -100,6 +106,7 @@ private:
 	//キューブ(hitbox用)
 	std::unique_ptr<CubeModel> hitBoxModel;
 	FbxObject3D* skydomeObject = nullptr;
+	FbxObject3D* lavaFloor = nullptr;
 	//----------自作クラス---------
 	//プレイヤー
 	std::unique_ptr<Player> player;
@@ -110,6 +117,7 @@ private:
 	std::list<std::unique_ptr<Magma>> magmas;
 	//マグマの障害物
 	std::unique_ptr<MagmaBlock> magmaBlock;
+	std::list<std::unique_ptr<MagmaBlock>> magmaBlocks;
 	//障害物の数
 	size_t obstacleVal = 350;
 	//床
@@ -190,4 +198,13 @@ private:
 	bool clear4Flag = false;
 	bool clear5Flag = false;
 	bool clear6Flag = false;
+	float lavaRot;
+	int diceRoll = 0;
+	int diceTime = 0;
+	bool diceFlag = false;
+	enum DiceAction {
+		ACTION_ONE = 1,
+		ACTION_TWO,
+		ACTION_THREE,
+	};
 };
