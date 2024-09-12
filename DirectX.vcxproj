@@ -120,14 +120,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)3D;$(ProjectDir)base;$(ProjectDir)DirectXTex;$(ProjectDir);$(ProjectDir)fbx;$(ProjectDir)Resources;$(ProjectDir)Resources\Shaderes\FbxShader;$(ProjectDir)Resources\Shaderes\OBJShader;$(ProjectDir)Resources\Shaderes\ParticleShader;$(ProjectDir)Resources\Shaderes\SpriteShader;$(ProjectDir)Resources\Shaderes\Shader;$(ProjectDir)math;$(ProjectDir)gameObject;D:\School\2NenKouki\TD\fbx_sdk\include;C:\Users\NawNa\source\repos\DirectX_CG2\Project\lib\fbx_sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)3D;$(ProjectDir)base;$(ProjectDir)DirectXTex;$(ProjectDir);$(ProjectDir)fbx;$(ProjectDir)Resources;$(ProjectDir)Resources\Shaderes\FbxShader;$(ProjectDir)Resources\Shaderes\OBJShader;$(ProjectDir)Resources\Shaderes\ParticleShader;$(ProjectDir)Resources\Shaderes\SpriteShader;$(ProjectDir)Resources\Shaderes\Shader;$(ProjectDir)math;$(ProjectDir)gameObject;D:\School\2NenKouki\TD\fbx_sdk\include;C:\Users\NawNa\source\repos\DirectX_CG2\Project\lib\fbx_sdk\include;%(AdditionalIncludeDirectories);C:\Users\81703\Desktop\fbx_sdk\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\School\2NenKouki\TD\fbx_sdk\lib;C:\Users\NawNa\source\repos\DirectX_CG2\Project\lib\fbx_sdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\School\2NenKouki\TD\fbx_sdk\lib;C:\Users\NawNa\source\repos\DirectX_CG2\Project\lib\fbx_sdk\lib;%(AdditionalLibraryDirectories);C:\Users\81703\Desktop\fbx_sdk\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,7 +138,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)DirextTex;$(ProjectDir)fbx;$(ProjectDir);$(ProjectDir)base;$(ProjectDir)math;$(ProjectDir)Resources;$(ProjectDir)Resources\Shaders\FbxShader;$(ProjectDir)Resources\Shaders\OBJShader;$(ProjectDir)Resources\Shaders\ParticleShader;$(ProjectDir)Resources\Shaders\Shader;$(ProjectDir)Resources\Shaders\SpriteShader;$(ProjectDir)3D;$(ProjectDir)gameObject</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)DirextTex;$(ProjectDir)fbx;$(ProjectDir);$(ProjectDir)base;$(ProjectDir)math;$(ProjectDir)Resources;$(ProjectDir)Resources\Shaders\FbxShader;$(ProjectDir)Resources\Shaders\OBJShader;$(ProjectDir)Resources\Shaders\ParticleShader;$(ProjectDir)Resources\Shaders\Shader;$(ProjectDir)Resources\Shaders\SpriteShader;$(ProjectDir)3D;$(ProjectDir)gameObject;C:\Users\81703\Desktop\fbx_sdk\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -147,6 +147,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libfbxsdk-mt.lib;libxml2-mt.lib;zlib-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>;C:\Users\81703\Desktop\fbx_sdk\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
