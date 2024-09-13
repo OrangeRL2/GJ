@@ -62,7 +62,14 @@ void Camera::Update()
 		position.z -= 0.55;
 	}*/
 
-
+	//if (input->PushKey(DIK_UP))
+	//{
+	//	eye_.z += 0.55;
+	//}
+	//if (input->PushKey(DIK_DOWN))
+	//{
+	//	eye_.z -= 0.55;
+	//}
 	matView_ = XMMatrixLookAtLH(XMLoadFloat3(&eye_), XMLoadFloat3(&target_), XMLoadFloat3(&up_));
 
 	//現在のフレームのキーを保存

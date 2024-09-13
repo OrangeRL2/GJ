@@ -18,6 +18,7 @@
 #include "MagmaBlock.h"
 #include "Goal.h"
 #include <cstdlib> 
+#include "TextObject.h"
 class GameScene
 {
 	//メンバ関数
@@ -82,23 +83,19 @@ private:
 	FbxModel* skydome = nullptr;
 
 	//ステージとかタイトルのモデル
-	//タイトル
-	FbxModel* titleModel = nullptr;
-	//stage1
-	FbxModel* stage1Model = nullptr;
-	//stage2
-	FbxModel* stage2Model = nullptr;
-	//stage3
-	FbxModel* stage3Model = nullptr;
-	//stage4
-	FbxModel* stage4Model = nullptr;
-	//stage5
-	FbxModel* stage5Model = nullptr;
-	//tutorial
-	FbxModel* stageTutoModel = nullptr;
-	//clear1
-	FbxModel* clear1Model = nullptr;
+	//instruction
 
+	FbxModel* titleModel = nullptr;
+	FbxModel* tutorialText1 = nullptr;
+	FbxModel* tutorialText2 = nullptr;
+	FbxModel* tutorialText3 = nullptr;
+	FbxModel* tutorialText4 = nullptr;
+	FbxModel* tutorialText5 = nullptr;
+	FbxModel* startTextModel = nullptr;
+	FbxModel* jumpTextModel = nullptr;
+	FbxModel* cameraTextModel = nullptr;
+	FbxModel* zoomTextModel = nullptr;
+	FbxModel* returnTextModel = nullptr;
 	//キューブ
 	std::unique_ptr<CubeModel> cubeModel;
 	/*std::unique_ptr<CubeObject3D> cubeObject;*/
@@ -126,6 +123,10 @@ private:
 	size_t floorVol = 7;
 	//ゴール
 	std::unique_ptr<Goal>goal;
+
+	//テキストのオブジェクト
+	std::list<std::unique_ptr<TextObject>>textObjects;
+	size_t textObjectVol = 5;
 
 	//---------------------------
 
@@ -207,4 +208,6 @@ private:
 		ACTION_TWO,
 		ACTION_THREE,
 	};
+	float cameraOffsetZ = 0.0f;
+	XMFLOAT3 textrot = {-80.0f,1.6f,0.0f};
 };

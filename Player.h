@@ -56,6 +56,7 @@ public:
 	void SetCollisionObstacle(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 scale);
 	void SetCollisionKey(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 scale);
 	void SetCollisionGoal(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 scale);
+	void SetGoalFlag();
 	//当たり判定をクリアする関数(ステージ変わる毎に呼ぶ)
 	void ClearCollision();
 
@@ -72,6 +73,7 @@ public:
 	DirectX::XMFLOAT3 GetHitboxScale0() { return hitboxScale0; }
 
 	bool GetGroundFlag0() { return groundFlag0; }
+	bool GetFloorFlag() { return floorFlag; }
 	bool GetMoveFlag() { return moveFlag; }
 	//ゴールのフラグ
 	bool GetGoalFlag() { return goalFlag; }
@@ -128,6 +130,7 @@ private:
 
 	//接地フラグ
 	bool groundFlag0 = false;
+	bool floorFlag = false;
 
 	bool preGroundFlag0 = false;
 

@@ -39,11 +39,16 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	//FBX読み込み
 	FbxLoader::GetInstance()->Initialize(dxCommon_->GetDevice());
 	//モデル名を指定してファイル読み込み
-	model1 = FbxLoader::GetInstance()->LoadModelFromFile("Walking", "Resources/red.png");
+	model1 = FbxLoader::GetInstance()->LoadModelFromFile("stone", "Resources/red.png");
 	stoneModel = FbxLoader::GetInstance()->LoadModelFromFile("stone", "Resources/dirt.png");
 	lavaModel = FbxLoader::GetInstance()->LoadModelFromFile("stone", "Resources/lava.png");
 	skydome = FbxLoader::GetInstance()->LoadModelFromFile("skydome", "Resources/skydome.png");
-
+	//操作方法
+	tutorialText1 = FbxLoader::GetInstance()->LoadModelFromFile("TutorialText1", "Resources/dirt.png"); //動き
+	tutorialText2 = FbxLoader::GetInstance()->LoadModelFromFile("TutorialText2", "Resources/dirt.png"); //ジャンプ
+	tutorialText3 = FbxLoader::GetInstance()->LoadModelFromFile("TutorialText4", "Resources/dirt.png"); //マグマの種類
+	tutorialText4 = FbxLoader::GetInstance()->LoadModelFromFile("TutorialText3", "Resources/dirt.png"); //透明床は安全
+	tutorialText5 = FbxLoader::GetInstance()->LoadModelFromFile("TutorialText5", "Resources/dirt.png"); //透明床は安全
 
 #pragma endregion
 
@@ -79,7 +84,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	Floor::SetDevice(dxCommon_->GetDevice());
 	Floor::SetCamera(camera_.get());
 
-
+	//テキストのオブジェクト
+	TextObject::SetDevice(dxCommon_->GetDevice());
+	TextObject::SetCamera(camera_.get());
 #pragma endregion
 
 #pragma region キューブモデルの設定
@@ -280,6 +287,49 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 
 #pragma endregion
 
+#pragma region テキストのオブジェクト
+	for (int i = 0; i < textObjectVol; i++)
+	{
+		std::unique_ptr<TextObject>newTextObject = std::make_unique<TextObject>();
+		if (i == 0)    //WASD
+		{
+			newTextObject->SetModel(tutorialText1);
+			newTextObject->SetPosition({ -300,20,30 });
+			newTextObject->SetScale({ 0.1,0.1,0.1 });
+			newTextObject->SetRotation({ 1.0f + textrot.x,-0.0f + textrot.y,-0.0f + textrot.z });
+		}
+		if (i == 1)    //SPACE
+		{
+			newTextObject->SetModel(tutorialText2);
+			newTextObject->SetPosition({ -250,20,30 });
+			newTextObject->SetScale({ 0.1,0.1,0.1 });
+			newTextObject->SetRotation({ 1.0f + textrot.x,-0.0f + textrot.y,-0.0f + textrot.z });
+		}
+		if (i == 2)    //SPACE
+		{
+			newTextObject->SetModel(tutorialText3);
+			newTextObject->SetPosition({ -160,20,30 });
+			newTextObject->SetScale({ 0.09,0.09,0.09 });
+			newTextObject->SetRotation({ 1.0f + textrot.x,-0.0f + textrot.y,-0.0f + textrot.z });
+		}	if (i == 3)    //SPACE
+		{
+			newTextObject->SetModel(tutorialText4);
+			newTextObject->SetPosition({ -100,20,30 });
+			newTextObject->SetScale({ 0.1,0.1,0.1 });
+			newTextObject->SetRotation({ 1.0f + textrot.x,-0.0f + textrot.y,-0.0f + textrot.z });
+		}	if (i == 4)    //SPACE
+		{
+			newTextObject->SetModel(tutorialText5);
+			newTextObject->SetPosition({ 300,40,30 });
+			newTextObject->SetScale({ 0.1,0.1,0.1 });
+			newTextObject->SetRotation({ 1.0f + textrot.x,-0.0f + textrot.y,-0.0f + textrot.z });
+		}
+		newTextObject->Initialize();
+		textObjects.push_back(std::move(newTextObject));
+	}
+
+#pragma endregion
+
 	SetTitle();
 
 }
@@ -302,7 +352,7 @@ void GameScene::Update()
 	if (input_->TriggerKey(DIK_2))stage = Stage::Stage2;
 	if (input_->TriggerKey(DIK_3))stage = Stage::Stage3;
 	if (input_->TriggerKey(DIK_4))stage = Stage::Stage4;
-	if (input_->TriggerKey(DIK_5))stage = Stage::Stage5;
+	//if (input_->TriggerKey(DIK_5))stage = Stage::Stage5;
 
 	//前のシーンと今のシーンが違かったらリセット処理
 	if (scene_ != preScene_)
@@ -320,7 +370,7 @@ void GameScene::Update()
 		if (stage == Stage::Stage2)		SetStage2();
 		if (stage == Stage::Stage3)		SetStage3();
 		if (stage == Stage::Stage4)		SetStage4();
-		if (stage == Stage::Stage5)		SetStage5();
+		//if (stage == Stage::Stage5)		SetStage5();
 	}
 
 	//前のフレームのシーン取得
@@ -335,7 +385,52 @@ void GameScene::Draw()
 
 void GameScene::TitleUpdate()
 {
+	if (player->GetGoalFlag() == true && stage == Stage::Title)
+	{
+		scene_ = static_cast<size_t>(Scene::Title);
+		sceneDraw_ = static_cast<size_t>(SceneDraw::TitleDraw);
+		stage = Stage::Stage1;
 
+		clearTutoFlag = true;
+	}
+
+	else if (player->GetGoalFlag() == true && stage == Stage::Stage1)
+	{
+		scene_ = static_cast<size_t>(Scene::Title);
+		sceneDraw_ = static_cast<size_t>(SceneDraw::TitleDraw);
+		stage = Stage::Stage2;
+
+		clear1Flag = true;
+	}
+
+	else if (player->GetGoalFlag() == true && stage == Stage::Stage2)
+	{
+		scene_ = static_cast<size_t>(Scene::Title);
+		sceneDraw_ = static_cast<size_t>(SceneDraw::TitleDraw);
+		stage = Stage::Stage3;
+
+		clear2Flag = true;
+
+	}
+	else if (player->GetGoalFlag() == true && stage == Stage::Stage3)
+	{
+		scene_ = static_cast<size_t>(Scene::Title);
+		sceneDraw_ = static_cast<size_t>(SceneDraw::TitleDraw);
+		stage = Stage::Stage4;
+
+		clear3Flag = true;
+
+	}
+
+	//if (player->GetGoalFlag() == true && stage == Stage::Stage4)
+	//{
+	//	scene_ = static_cast<size_t>(Scene::Title);
+	//	sceneDraw_ = static_cast<size_t>(SceneDraw::TitleDraw);
+	//	stage = Stage::Tutorial;
+
+	//	clear1Flag = true;
+
+	//}
 	//床更新
 	for (std::unique_ptr<Floor>& floor : floors)
 	{
@@ -374,11 +469,46 @@ void GameScene::TitleUpdate()
 	lavaFloor->SetRotation({0.0f,lavaRot,0.0f });
 	lavaFloor->Update();
 	//camera_->SetTarget(player->GetPosition0());
+	//if (input_->PushKey(DIK_UP))
+	//{
+	//	cameraOffsetZ += 0.55;
+	//}
+	//if (input_->PushKey(DIK_DOWN))
+	//{
+	//	cameraOffsetZ -= 0.55;
+	//}
+
+	//テキストのオブジェクト更新
+	for (std::unique_ptr<TextObject>& textObject : textObjects)
+	{
+		textObject->Update();
+	}
+
 	camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 	//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
-	camera_->SetEye({ camera_->GetEye().x - 10.0f,player->GetPosition0().y+100.0f,camera_->GetEye().z });
+	camera_->SetEye({ camera_->GetEye().x - 10.0f,player->GetPosition0().y+100.0f,camera_->GetEye().z+cameraOffsetZ });
 	//カメラ更新
 	camera_->Update();
+
+	//int j = 0;
+	//for (std::unique_ptr<TextObject>& floor : textObjects)
+	//{
+	//	if (j == 0)
+	//	{
+	//		floor->SetScale({ 300,0.5,40 });
+	//		floor->SetRotation({ 1.0f + textrot.x,-0.0f + textrot.y,-0.0f + textrot.z });
+	//	}
+	//}
+
+	//if (input_->PushKey(DIK_Z)) {
+	//	textrot.x += 0.1f;
+	//}
+	//if (input_->PushKey(DIK_X)) {
+	//	textrot.y += 0.1f;
+	//}
+	//if (input_->PushKey(DIK_C)) {
+	//	textrot.z += 0.1f;
+	//}
 }
 
 void GameScene::TitleDraw()
@@ -390,7 +520,7 @@ void GameScene::TitleDraw()
 		clear3Flag = false;
 		clear4Flag = false;
 		clear5Flag = false;
-		SetTitle();
+		//SetTitle();
 	}
 
 	//障害物描画
@@ -421,54 +551,67 @@ void GameScene::TitleDraw()
 		i++;
 	}
 	
+	//テキストのオブジェクト描画
+	int j = 0;
+	for (std::unique_ptr<TextObject>& textObject : textObjects)
+	{
+		if (j == 0)textObject->Draw(dxCommon_->GetCommandList());
+		if (j == 1)textObject->Draw(dxCommon_->GetCommandList());
+		if (j == 2)textObject->Draw(dxCommon_->GetCommandList());
+		if (j == 3)textObject->Draw(dxCommon_->GetCommandList());
+		if (j == 4)textObject->Draw(dxCommon_->GetCommandList());
+		if (j == 5)textObject->Draw(dxCommon_->GetCommandList());
+		
+		j++;
+	}
+
 }
 
 void GameScene::GameUpdate()
 {
+	////床更新
+	//for (std::unique_ptr<Floor>& floor : floors)
+	//{
+	//	floor->Update();
+	//}
 
-	//床更新
-	for (std::unique_ptr<Floor>& floor : floors)
-	{
-		floor->Update();
-	}
+	////障害物更新
+	//for (std::unique_ptr<Obstacle>& obstacle : obstacles)
+	//{
+	//	obstacle->Update();
+	//}
 
-	//障害物更新
-	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
-	{
-		obstacle->Update();
-	}
+	////マグマ更新
+	//for (std::unique_ptr<Magma>& magma : magmas)
+	//{
+	//	magma->Update();
+	//}
 
-	//マグマ更新
-	for (std::unique_ptr<Magma>& magma : magmas)
-	{
-		magma->Update();
-	}
+	////プレイヤー更新
+	//player->Update();
+	//magmaBlock->Update();
+	//for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
+	//{
+	//	magma->Update();
+	//}
+	//goal->Update();
+	////オブジェクト更新
+	//skydomeObject->SetPosition(player->GetPosition0());
+	////skydomeObject->SetPosition({0.0f,0.0f,0.0f});
+	//skydomeObject->SetScale({ 900.0f,900.0f,900.0f });
+	//skydomeObject->SetRotation({ 0.0f,0.0f,0.0f });
+	//skydomeObject->Update();
 
-	//プレイヤー更新
-	player->Update();
-	magmaBlock->Update();
-	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
-	{
-		magma->Update();
-	}
-	goal->Update();
-	//オブジェクト更新
-	skydomeObject->SetPosition(player->GetPosition0());
-	//skydomeObject->SetPosition({0.0f,0.0f,0.0f});
-	skydomeObject->SetScale({ 900.0f,900.0f,900.0f });
-	skydomeObject->SetRotation({ 0.0f,0.0f,0.0f });
-	skydomeObject->Update();
-
-	lavaFloor->SetPosition({0.0f,20.0f,0.0f});
-	lavaFloor->SetScale({ 900.0f,0.5f,900.0f });
-	lavaFloor->SetRotation({ 0.0f,0.0f,0.0f });
-	lavaFloor->Update();
-	//camera_->SetTarget(player->GetPosition0());
-	camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
-	//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
-	camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 100.0f,camera_->GetEye().z });
-	//カメラ更新
-	camera_->Update();
+	//lavaFloor->SetPosition({0.0f,20.0f,0.0f});
+	//lavaFloor->SetScale({ 900.0f,0.5f,900.0f });
+	//lavaFloor->SetRotation({ 0.0f,0.0f,0.0f });
+	//lavaFloor->Update();
+	////camera_->SetTarget(player->GetPosition0());
+	//camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
+	////camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
+	//camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 100.0f,camera_->GetEye().z });
+	////カメラ更新
+	//camera_->Update();
 }
 
 void GameScene::GameDraw()
@@ -480,7 +623,7 @@ void GameScene::GameDraw()
 		clear3Flag = false;
 		clear4Flag = false;
 		clear5Flag = false;
-		SetTitle();
+		//SetTitle();
 	}
 
 	//障害物描画
@@ -661,6 +804,7 @@ void GameScene::DebugLoadCsv(const wchar_t* fileName, int obstacleVal)
 void GameScene::SetTitle()
 {
 	player->ClearCollision();
+	//player->SetGoalFlag();
 	//camera_->SetCamera();
 	for (std::unique_ptr<MagmaBlock>& magma : magmaBlocks)
 	{
@@ -673,13 +817,13 @@ void GameScene::SetTitle()
 	{
 		if (j == 0)
 		{
-			floor->SetScale({ 50,0.5,40 });
-			floor->SetPosition({ -10.0f,5.0f,30.0f });
+			floor->SetScale({ 300,0.5,40 });
+			floor->SetPosition({ -170.0f,5.0f,30.0f });
 		}
 		if (j == 1)
 		{
 			floor->SetScale({ 100,0.5,100 });
-			floor->SetPosition({ -40.0	,190.0	,40.0 });
+			floor->SetPosition({ 300.0	,20.0	,40.0 });
 		}
 		//if (j == 2)
 		//{
@@ -696,14 +840,14 @@ void GameScene::SetTitle()
 		goal->SetTutorial();
 		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
 		player->SetCollisionGoal(goal->GetPosition(), goal->GetScale());	//ゴール
-		player->SetPosition0({ -10.0f,5.0f,30.0f });
+		player->SetPosition0({ -310.0f,5.0f,30.0f });
 		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
 		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 80.0f,camera_->GetEye().z });
 	}
 	//障害物読み込み
 	LoadCsv(L"Resources/obstacleTutorial2.csv", tutorialObstacleVal2);
-	LoadCsvMagma(L"Resources/magmaStage2.csv", magmaVal2);
+	LoadCsvMagma(L"Resources/magmaTutorial.csv", magmaVal2);
 
 	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
 	{
@@ -738,7 +882,7 @@ void GameScene::SetStage1()
 		if (j == 1)
 		{
 			floor->SetScale({ 100,0.5,100 });
-			floor->SetPosition({ -40.0	,190.0	,40.0 });
+			floor->SetPosition({ -20.0	,190.0	,100.0 });
 		}
 		//if (j == 2)
 		//{
@@ -752,10 +896,10 @@ void GameScene::SetStage1()
 		//}
 		j++;
 		//ゴールセット
-		goal->SetTutorial();
+		goal->SetStage1();
 		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
 		player->SetCollisionGoal(goal->GetPosition(), goal->GetScale());	//ゴール
-		player->SetPosition0({ -10.0f,5.0f,30.0f });
+		player->SetPosition0({ 0.0	,2.0	,20.0 });
 		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
 		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 80.0f,camera_->GetEye().z });
@@ -881,14 +1025,14 @@ void GameScene::SetStage4()
 	{
 		if (j == 0)
 		{
-			floor->SetScale({ 100,0.5,100 });
-			floor->SetPosition({ 0,0,0 });
+			floor->SetScale({ 10,0.5,10 });
+			floor->SetPosition({ 5.0	,6.0	,40.0 });
 		}
-		//if (j == 1)
-		//{
-		//	floor->SetScale({ 10,0.5,10 });
-		//	floor->SetPosition({ 0,10,0 });
-		//}
+		if (j == 1)
+		{
+			floor->SetScale({ 100,0.5,100 });
+			floor->SetPosition({ 30.0,190.0,100.0 });
+		}
 		//if (j == 2)
 		//{
 		//	floor->SetScale({ 10,0.5,10 });
@@ -901,13 +1045,13 @@ void GameScene::SetStage4()
 		//}
 		j++;
 		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//床
-		player->SetPosition0({ 0.0f,5.0f,0.0f });
+		player->SetPosition0({ 5.0	,6.0	,40.0 });
 		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
 		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 10.0f,camera_->GetEye().z });
 	}
 	//障害物読み込み
-	LoadCsv(L"Resources/obstacleTutorial4.csv", tutorialObstacleVal4);
+	LoadCsv(L"Resources/gameStage4.csv", tutorialObstacleVal2 );
 
 	for (std::unique_ptr<Obstacle>& obstacle : obstacles)
 	{
@@ -966,14 +1110,14 @@ void GameScene::SetStage5()
 void (GameScene::* GameScene::Scene_[])() =
 {
 	&GameScene::TitleUpdate,
-	&GameScene::GameUpdate,
+	//&GameScene::GameUpdate,
 
 };
 
 void (GameScene::* GameScene::SceneDraw_[])() =
 {
 	&GameScene::TitleDraw,
-	&GameScene::GameDraw,
+	//&GameScene::GameDraw,
 
 };
 
@@ -999,7 +1143,24 @@ void GameScene::Collision() {
 				-300 <	 _magmaBlocks->GetPosition().y - player->GetPosition0().y) {
 				if		(_magmaBlocks->GetPosition().z - player->GetPosition0().z < 5 &&
 					-5 < _magmaBlocks->GetPosition().z - player->GetPosition0().z) {
-					SetTitle();
+					
+					if (player->GetFloorFlag() != true) {
+						if (clearTutoFlag == false) {
+			SetTitle();
+		}
+		else if (clearTutoFlag == true) {
+			SetStage1();
+		}
+		else if (clearTutoFlag == true && clear1Flag == true) {
+			SetStage2();
+		}
+		else if (clearTutoFlag == true && clear2Flag == true) {
+			SetStage3();
+		}
+		else if (clearTutoFlag == true && clear3Flag == true) {
+			SetStage4();
+		}
+					}
 				}
 			}
 		}
@@ -1009,7 +1170,21 @@ void GameScene::Collision() {
 
 	}
 	if (player->GetPosition0().y < -100) {
-		SetTitle();
+		if (clearTutoFlag == false) {
+			SetTitle();
+		}
+		else if (clearTutoFlag == true) {
+			SetStage1();
+		}
+		else if (clearTutoFlag == true && clear1Flag == true) {
+			SetStage2();
+		}
+		else if (clearTutoFlag == true && clear2Flag == true) {
+			SetStage3();
+		}
+		else if (clearTutoFlag == true && clear3Flag == true) {
+			SetStage4();
+		}
 	}
 	}
 
@@ -1057,15 +1232,15 @@ void GameScene::DiceResult() {
 	switch (diceRoll) {
 	case ACTION_ONE:
 		//if(diceFlag==true)
-		CreateEruption({ player->GetPosition0().x +10,player->GetPosition0().y - 400.0f, player->GetPosition0().z });
+		CreateEruption({ player->GetPosition0().x +15,player->GetPosition0().y - 400.0f, player->GetPosition0().z });
 		//diceRoll = 0;
 		break;
 	case ACTION_TWO:
-		CreateEruption({ player->GetPosition0().x + 0.0f,player->GetPosition0().y - 400.0f, player->GetPosition0().z + 10.0f });
+		CreateEruption({ player->GetPosition0().x + 0.0f,player->GetPosition0().y - 400.0f, player->GetPosition0().z + 15.0f });
 		//diceRoll = 0;
 		break;
 	case ACTION_THREE:
-		CreateEruption({ player->GetPosition0().x,player->GetPosition0().y - 400.0f, player->GetPosition0().z - 10.0f });
+		CreateEruption({ player->GetPosition0().x,player->GetPosition0().y - 400.0f, player->GetPosition0().z - 15.0f });
 		//diceRoll = 0;
 		break;
 	default:

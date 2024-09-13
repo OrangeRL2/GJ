@@ -27,7 +27,7 @@ void Player::Initialize()
 	cubeObject0->SetModel(cubeModel);
 
 	hitboxPosition0.x = position0.x;
-	hitboxPosition0.y = position0.y ;
+	hitboxPosition0.y = position0.y;
 	hitboxPosition0.z = position0.z;
 	hitboxRotation0 = { 0.0f,0.0f,0.0f };
 	hitboxScale0 = { 3.0f,12.0f,3.0f };
@@ -83,18 +83,35 @@ void Player::Update()
 }
 void Player::UpdateMove()
 {
+	float moveSpeed = 0.5f;
+	float moveX = 0.0f;
+	float moveZ = 0.0f;
+
+	// Check movement keys
 	if (input->PushKey(DIK_W)) {
-		position0.x += 0.5f;
+		moveX += 1.0f;
 	}
 	if (input->PushKey(DIK_S)) {
-		position0.x -= 0.5f;
+		moveX -= 1.0f;
 	}
 	if (input->PushKey(DIK_A)) {
-		position0.z += 0.5f;
+		moveZ += 1.0f;
 	}
 	if (input->PushKey(DIK_D)) {
-		position0.z -= 0.5f;
+		moveZ -= 1.0f;
 	}
+
+	// Normalize movement if moving diagonally
+	float length = sqrt(moveX * moveX + moveZ * moveZ);
+	if (length > 0) {
+		moveX /= length;
+		moveZ /= length;
+	}
+
+	// Apply movement
+	position0.x += moveX * moveSpeed;
+	position0.z += moveZ * moveSpeed;
+
 
 	if (input->PushKey(DIK_SPACE) && groundFlag0 == true && playerState == front)
 	{
@@ -129,6 +146,7 @@ void Player::Draw(ID3D12GraphicsCommandList* cmdList)
 void Player::SetTitle()
 {
 	groundFlag0 = false;
+	floorFlag = false;
 
 	changeFlag = false;
 	keyFlag = false;
@@ -148,6 +166,11 @@ void Player::SetTitle()
 	camera->GetMode() == Camera::forward;
 }
 
+void Player::SetGoalFlag()
+{
+	goalFlag = false;
+}
+
 void Player::UpdateCollision()
 {
 	//ヒットボックスの最大値、最小値を定義
@@ -163,45 +186,45 @@ void Player::UpdateCollision()
 		if (collision->GetPosition().y >= 0)
 		{
 			XMFLOAT3 h = { hitboxPosition0.x,hitboxPosition0.y + 3,hitboxPosition0.z };
-		// Side collision only occurs if the player is not below the obstacle
-// Only process side collisions if the player is above the obstacle or close to it
-			// Allow side collisions only if the player is at or above the obstacle's minimum Y
-			/*if (position0.y >= collision->GetMin().y) {*/
-				// Left side collision
-				if (-2 + velocity0.x <= Max0.x - collision->GetMin().x && Max0.x - collision->GetMin().x <= 2 + velocity0.x) {
-					while (collision->Update(h, hitboxScale0) == 1) {
-						position0.x -= 0.0002f;  // Push left
-						hitboxPosition0.x -= 0.0002f;
-						h.x -= 0.0002f;
-					}
+			// Side collision only occurs if the player is not below the obstacle
+	// Only process side collisions if the player is above the obstacle or close to it
+				// Allow side collisions only if the player is at or above the obstacle's minimum Y
+				/*if (position0.y >= collision->GetMin().y) {*/
+					// Left side collision
+			if (-2 + velocity0.x <= Max0.x - collision->GetMin().x && Max0.x - collision->GetMin().x <= 2 + velocity0.x) {
+				while (collision->Update(h, hitboxScale0) == 1) {
+					position0.x -= 0.0002f;  // Push left
+					hitboxPosition0.x -= 0.0002f;
+					h.x -= 0.0002f;
 				}
+			}
 
-				// Right side collision
-				if (-2 + velocity0.x <= Min0.x - collision->GetMax().x && Min0.x - collision->GetMax().x <= 2 + velocity0.x) {
-					while (collision->Update(h, hitboxScale0) == 1) {
-						position0.x += 0.0002f;  // Push right
-						hitboxPosition0.x += 0.0002f;
-						h.x += 0.0002f;
-					}
+			// Right side collision
+			if (-2 + velocity0.x <= Min0.x - collision->GetMax().x && Min0.x - collision->GetMax().x <= 2 + velocity0.x) {
+				while (collision->Update(h, hitboxScale0) == 1) {
+					position0.x += 0.0002f;  // Push right
+					hitboxPosition0.x += 0.0002f;
+					h.x += 0.0002f;
 				}
+			}
 
-				// Front side collision (Z axis)
-				if (-2 + velocity0.z <= Max0.z - collision->GetMin().z && Max0.z - collision->GetMin().z <= 2 + velocity0.z) {
-					while (collision->Update(h, hitboxScale0) == 1) {
-						position0.z -= 0.0002f;  // Push back
-						hitboxPosition0.z -= 0.0002f;
-						h.z -= 0.0002f;
-					}
+			// Front side collision (Z axis)
+			if (-2 + velocity0.z <= Max0.z - collision->GetMin().z && Max0.z - collision->GetMin().z <= 2 + velocity0.z) {
+				while (collision->Update(h, hitboxScale0) == 1) {
+					position0.z -= 0.0002f;  // Push back
+					hitboxPosition0.z -= 0.0002f;
+					h.z -= 0.0002f;
 				}
+			}
 
-				// Back side collision (Z axis)
-				if (-2 + velocity0.z <= Min0.z - collision->GetMax().z && Min0.z - collision->GetMax().z <= 2 + velocity0.z) {
-					while (collision->Update(h, hitboxScale0) == 1) {
-						position0.z += 0.0002f;  // Push forward
-						hitboxPosition0.z += 0.0002f;
-						h.z += 0.0002f;
-					}
+			// Back side collision (Z axis)
+			if (-2 + velocity0.z <= Min0.z - collision->GetMax().z && Min0.z - collision->GetMax().z <= 2 + velocity0.z) {
+				while (collision->Update(h, hitboxScale0) == 1) {
+					position0.z += 0.0002f;  // Push forward
+					hitboxPosition0.z += 0.0002f;
+					h.z += 0.0002f;
 				}
+			}
 			//}
 
 			if (position0.y < collision->GetMin().y - 10.0f) {
@@ -213,18 +236,19 @@ void Player::UpdateCollision()
 				}
 			}
 			if (position0.y > collision->GetMin().y) {
-			if (collision->Update(h, hitboxScale0) == 1) {
-				// Handle normal collision if the player is above or at the obstacle
-				groundFlag0 = true;
-				fallTimer0 = 0;
-				fallVelocity0.y = 0;
+				if (collision->Update(h, hitboxScale0) == 1) {
+					// Handle normal collision if the player is above or at the obstacle
+					groundFlag0 = true;
+					floorFlag = false;
+					fallTimer0 = 0;
+					fallVelocity0.y = 0;
 
-				while (collision->Update(h, hitboxScale0) == 1) {
-					position0.y += 0.002f; // Push up if necessary
-					hitboxPosition0.y += 0.002f;
-					h.y += 0.002f;
+					while (collision->Update(h, hitboxScale0) == 1) {
+						position0.y += 0.002f; // Push up if necessary
+						hitboxPosition0.y += 0.002f;
+						h.y += 0.002f;
+					}
 				}
-			}
 			}
 		}
 
@@ -242,6 +266,7 @@ void Player::UpdateCollision()
 			{
 				//接地フラグを立てる
 				groundFlag0 = true;
+				floorFlag = true;
 				//自由落下Tの値をリセット
 				fallTimer0 = 0;
 				//落下ベクトルをリセット
@@ -303,7 +328,7 @@ void Player::UpdateCollision()
 		if (collision->Update(hitboxPosition0, hitboxScale0) == 1)
 		{
 			goalFlag = true;
-			position0.x = 10.0f;
+			//position0.x = 10.0f;
 		}
 	}
 }
@@ -321,6 +346,7 @@ void Player::ClearCollision()
 {
 	collisionsObstacle.clear();
 	collisionsFloor.clear();
+	goalFlag = false;
 }
 
 void Player::SetCollisionFloor(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 scale)

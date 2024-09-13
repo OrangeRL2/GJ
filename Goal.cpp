@@ -42,13 +42,22 @@ void Goal::Update()
 
 void Goal::Draw(ID3D12GraphicsCommandList* cmdList)
 {
-	object->Draw(cmdList);
+	//object->Draw(cmdList);
 	cubeObject->Draw(cmdList);
 }
 
 void Goal::SetTutorial()
 {
-	SetPosition({ -40.0	,190.0	,40.0 });
+	//SetPosition({ -40.0	,190.0	,40.0 });
+	SetPosition({ 300.0f,20.0f	,40.0f });
+	hitboxPosition.x = position.x;
+	hitboxPosition.y = position.y + 3;
+	hitboxPosition.z = position.z;
+	hitboxScale = { 10.0f,10.0f,10.0f };
+}
+void Goal::SetStage1()
+{
+	SetPosition({ -20.0	,190.0	,100.0 });
 
 	hitboxPosition.x = position.x;
 	hitboxPosition.y = position.y + 3;
