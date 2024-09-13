@@ -11,10 +11,14 @@
 #include "Collision.h"
 #include "Camera.h"
 #include "Obstacle.h"
+#include "Magma.h"
 #include "Sprite.h"
 #include "Floor.h"
 #include "Player.h"
-
+#include "MagmaBlock.h"
+#include "Goal.h"
+#include <cstdlib> 
+#include "TextObject.h"
 class GameScene
 {
 	//メンバ関数
@@ -33,6 +37,8 @@ public:
 	void GameUpdate();
 	void GameDraw();
 
+	void CreateEruption(XMFLOAT3 pos);
+
 	//シーンごとのセット関数
 	//タイトルをセット
 	void SetTitle();
@@ -44,10 +50,15 @@ public:
 	void SetStage4();
 	void SetStage5();
 
+
 	//スペースキーでファイル読み込みを実行する関数
 	void LoadCsv(const wchar_t* fileName, int obstacleVal);
+	void LoadCsvMagma(const wchar_t* fileName, int magmaVal);
 	void DebugLoadCsv(const wchar_t* fileName, int obstacleVal);
 
+	void Collision();
+	int rollDice() {return (rand() % 3) + 1; }// Generate a random number between 1 and 6
+	void DiceResult();
 	//メンバ変数
 private:
 	//デバイスとinput
@@ -68,45 +79,54 @@ private:
 	FbxModel* goalModel = nullptr;
 	//鍵のモデル
 	FbxModel* keyModel = nullptr;
+	FbxModel* lavaModel = nullptr;
+	FbxModel* skydome = nullptr;
 
 	//ステージとかタイトルのモデル
-	//タイトル
-	FbxModel* titleModel = nullptr;
-	//stage1
-	FbxModel* stage1Model = nullptr;
-	//stage2
-	FbxModel* stage2Model = nullptr;
-	//stage3
-	FbxModel* stage3Model = nullptr;
-	//stage4
-	FbxModel* stage4Model = nullptr;
-	//stage5
-	FbxModel* stage5Model = nullptr;
-	//tutorial
-	FbxModel* stageTutoModel = nullptr;
-	//clear1
-	FbxModel* clear1Model = nullptr;
+	//instruction
 
+	FbxModel* titleModel = nullptr;
+	FbxModel* tutorialText1 = nullptr;
+	FbxModel* tutorialText2 = nullptr;
+	FbxModel* tutorialText3 = nullptr;
+	FbxModel* tutorialText4 = nullptr;
+	FbxModel* tutorialText5 = nullptr;
+	FbxModel* startTextModel = nullptr;
+	FbxModel* jumpTextModel = nullptr;
+	FbxModel* cameraTextModel = nullptr;
+	FbxModel* zoomTextModel = nullptr;
+	FbxModel* returnTextModel = nullptr;
 	//キューブ
 	std::unique_ptr<CubeModel> cubeModel;
 	/*std::unique_ptr<CubeObject3D> cubeObject;*/
 
 	//キューブ(hitbox用)
 	std::unique_ptr<CubeModel> hitBoxModel;
-
+	FbxObject3D* skydomeObject = nullptr;
+	FbxObject3D* lavaFloor = nullptr;
 	//----------自作クラス---------
 	//プレイヤー
 	std::unique_ptr<Player> player;
-
+	
 	//障害物
 	std::list<std::unique_ptr<Obstacle>> obstacles;
+	//まぐまのゾーン
+	std::list<std::unique_ptr<Magma>> magmas;
+	//マグマの障害物
+	std::unique_ptr<MagmaBlock> magmaBlock;
+	std::list<std::unique_ptr<MagmaBlock>> magmaBlocks;
 	//障害物の数
 	size_t obstacleVal = 350;
 	//床
 	//std::unique_ptr<Floor>floor;
 	std::list<std::unique_ptr<Floor>>floors;
 	size_t floorVol = 7;
+	//ゴール
+	std::unique_ptr<Goal>goal;
 
+	//テキストのオブジェクト
+	std::list<std::unique_ptr<TextObject>>textObjects;
+	size_t textObjectVol = 5;
 
 	//---------------------------
 
@@ -161,12 +181,14 @@ private:
 	//tutorial
 	size_t tutorialObstacleVal = 9;
 	size_t tutorialObstacleVal1 = 9;
-	size_t tutorialObstacleVal2 = 21;
+	size_t tutorialObstacleVal2 = 20;
 	size_t tutorialObstacleVal3 = 24;
 	size_t tutorialObstacleVal4 = 126;
 	size_t tutorialObstacleVal5 = 126;
 	size_t stage1ObstacleVal = 5;
 
+	//magma
+	size_t magmaVal2 = 20;
 	float num = 0;
 
 	//クリアーフラッグ
@@ -177,4 +199,15 @@ private:
 	bool clear4Flag = false;
 	bool clear5Flag = false;
 	bool clear6Flag = false;
+	float lavaRot;
+	int diceRoll = 0;
+	int diceTime = 0;
+	bool diceFlag = false;
+	enum DiceAction {
+		ACTION_ONE = 1,
+		ACTION_TWO,
+		ACTION_THREE,
+	};
+	float cameraOffsetZ = 0.0f;
+	XMFLOAT3 textrot = {-80.0f,1.6f,0.0f};
 };

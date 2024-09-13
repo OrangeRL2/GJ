@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -171,12 +171,17 @@
     <ClCompile Include="gameObject\Floor.cpp" />
     <ClCompile Include="gameObject\Obstacle.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="Magma.cpp" />
+    <ClCompile Include="MagmaBlock.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\Math2.cpp" />
     <ClCompile Include="math\Matrix4.cpp" />
     <ClCompile Include="math\Quaternion.cpp" />
     <ClCompile Include="math\Vector3.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Skydome.cpp" />
+    <ClCompile Include="TextObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3D\Collision.h" />
@@ -199,11 +204,16 @@
     <ClInclude Include="gameObject\Floor.h" />
     <ClInclude Include="gameObject\Obstacle.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Goal.h" />
+    <ClInclude Include="Magma.h" />
+    <ClInclude Include="MagmaBlock.h" />
     <ClInclude Include="math\Math2.h" />
     <ClInclude Include="math\Matrix4.h" />
     <ClInclude Include="math\Quaternion.h" />
     <ClInclude Include="math\Vector3.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Skydome.h" />
+    <ClInclude Include="TextObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

@@ -37,7 +37,7 @@ public:
 	//更新
 	void Update();
 	void SetCamera();
-	
+
 
 	//タイトル、ステージセレクトの挙動
 	void StageSelect(DirectX::XMFLOAT3 pos, int playerState);
@@ -99,7 +99,7 @@ private:
 	//角度
 	float changeRotX;
 	float changeRotZ;
-	float changeRot = (float)PI * 1/2;
+	float changeRot = (float)PI * 1 / 2;
 	//カメラの入れ替えにかけるフレーム
 	float changeTime = 30.0f;
 	float changeTimer = 0.0f;
