@@ -57,7 +57,7 @@ void Goal::SetTutorial()
 }
 void Goal::SetStage2()
 {
-	SetPosition({ 70.0f	,200.0f	,40.0f });
+	SetPosition({ 0.0f	,200.0f	,30.0f });
 
 	hitboxPosition.x = position.x;
 	hitboxPosition.y = position.y + 3;
@@ -66,7 +66,7 @@ void Goal::SetStage2()
 }
 void Goal::SetStage3()
 {
-	SetPosition({ 200.0f	,160.0f	,40.0f });
+	SetPosition({ 0.0f	,160.0f	,80.0f });
 
 	hitboxPosition.x = position.x;
 	hitboxPosition.y = position.y + 3;

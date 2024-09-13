@@ -796,8 +796,8 @@ void GameScene::SetStage2()
 		}
 		if (j == 1)
 		{
-			floor->SetScale({ 100,0.5,100 });
-			floor->SetPosition({ 70.0f	,190.0f	,40.0f });
+			floor->SetScale({ 50,0.5,40 });
+			floor->SetPosition({ 20.0f	,190.0f	,40.0f });
 		}
 		//if (j == 2)
 		//{
@@ -855,8 +855,8 @@ void GameScene::SetStage3()
 		}
 		if (j == 1)
 		{
-			floor->SetScale({ 100,0.5,100 });
-			floor->SetPosition({ 200.0f	,150.0f	,40.0f });
+			floor->SetScale({ 150,0.5,20 });
+			floor->SetPosition({ 70.0f	,150.0f	,80.0f });
 		}
 		//if (j == 2)
 		//{
@@ -873,7 +873,7 @@ void GameScene::SetStage3()
 		goal->SetStage3();
 		player->SetCollisionFloor(floor->GetPosition(), floor->GetScale());	//°
 		player->SetCollisionGoal(goal->GetPosition(), goal->GetScale());	//ƒS[ƒ‹
-		player->SetPosition0({ -10.0f,5.0f,30.0f });
+		player->SetPosition0({ 0.0f	,160.0f	,80.0f });
 		camera_->PlayerAim(player->GetPosition0(), player->GetPosition0(), player->GetPlayerState());
 		//camera_->SetEye({ player->GetPosition0().x,player->GetPosition0().y+10.0f,player->GetPosition0().z});
 		camera_->SetEye({ camera_->GetEye().x,player->GetPosition0().y + 80.0f,camera_->GetEye().z });
