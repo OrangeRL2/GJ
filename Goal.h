@@ -32,6 +32,7 @@ public:
 	//シーンごとのセット
 	void SetTutorial();
 	void SetStage2();
+	void SetStage3();
 	void SetStage4();
 
 	//セッター
