@@ -66,7 +66,16 @@ void Goal::SetStage1()
 }
 void Goal::SetStage2()
 {
-	SetPosition({ 10.0f	,5.0f	,10.0f });
+	SetPosition({ 0.0f	,200.0f	,30.0f });
+
+	hitboxPosition.x = position.x;
+	hitboxPosition.y = position.y + 3;
+	hitboxPosition.z = position.z;
+	hitboxScale = { 6.0f,6.0f,6.0f };
+}
+void Goal::SetStage3()
+{
+	SetPosition({ 0.0f	,160.0f	,80.0f });
 
 	hitboxPosition.x = position.x;
 	hitboxPosition.y = position.y + 3;
